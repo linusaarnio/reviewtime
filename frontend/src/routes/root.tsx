@@ -1,7 +1,8 @@
-import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
+  BuildingOfficeIcon,
   CalendarIcon,
   ChartBarIcon,
   FolderIcon,
@@ -9,35 +10,43 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { Outlet } from 'react-router-dom'
+} from "@heroicons/react/24/outline";
+import { Outlet, useLoaderData } from "react-router-dom";
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-]
+  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
+  { name: "Team", href: "#", icon: UsersIcon, current: false },
+  { name: "Projects", href: "#", icon: FolderIcon, current: false },
+  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+  { name: "Documents", href: "#", icon: InboxIcon, current: false },
+  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
-export default function Example() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+interface Data {
+  profile: {
+    name: string;
+    avatarUrl: string;
+  };
+  organization: string;
+}
+
+export const rootLoader: () => Promise<Data> = async () => {
+  return {
+    profile: { name: "Linus Aarnio", avatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4" },
+    organization: "LiU",
+  };
+};
+
+export default function PageRoot() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const data = useLoaderData() as Data;
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
@@ -99,15 +108,15 @@ export default function Example() {
                           href={item.href}
                           className={classNames(
                             item.current
-                              ? 'bg-gray-900 text-white'
-                              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                            'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                              ? "bg-gray-900 text-white"
+                              : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                            "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                           )}
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                              'mr-4 flex-shrink-0 h-6 w-6'
+                              item.current ? "text-gray-300" : "text-gray-400 group-hover:text-gray-300",
+                              "mr-4 flex-shrink-0 h-6 w-6"
                             )}
                             aria-hidden="true"
                           />
@@ -120,14 +129,10 @@ export default function Example() {
                     <a href="#" className="group block flex-shrink-0">
                       <div className="flex items-center">
                         <div>
-                          <img
-                            className="inline-block h-10 w-10 rounded-full"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            alt=""
-                          />
+                          <img className="inline-block h-10 w-10 rounded-full" src={data.profile.avatarUrl} alt="" />
                         </div>
                         <div className="ml-3">
-                          <p className="text-base font-medium text-white">Tom Cook</p>
+                          <p className="text-base font-medium text-white">{data.profile.name}</p>
                           <p className="text-sm font-medium text-gray-400 group-hover:text-gray-300">View profile</p>
                         </div>
                       </div>
@@ -158,14 +163,14 @@ export default function Example() {
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                      item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                     )}
                   >
                     <item.icon
                       className={classNames(
-                        item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                        'mr-3 flex-shrink-0 h-6 w-6'
+                        item.current ? "text-gray-300" : "text-gray-400 group-hover:text-gray-300",
+                        "mr-3 flex-shrink-0 h-6 w-6"
                       )}
                       aria-hidden="true"
                     />
@@ -178,14 +183,10 @@ export default function Example() {
               <a href="#" className="group block w-full flex-shrink-0">
                 <div className="flex items-center">
                   <div>
-                    <img
-                      className="inline-block h-9 w-9 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
+                    <img className="inline-block h-9 w-9 rounded-full" src={data.profile.avatarUrl} alt="" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-white">Tom Cook</p>
+                    <p className="text-sm font-medium text-white">{data.profile.name}</p>
                     <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">View profile</p>
                   </div>
                 </div>
@@ -204,18 +205,41 @@ export default function Example() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <main className="flex-1">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-              </div>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                <Outlet />
+          <main className="flex-1 pb-8">
+            <div className="bg-white shadow">
+              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
+                <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
+                  <div className="min-w-0 flex-1">
+                    {/* Profile */}
+                    <div className="flex items-center">
+                      <img className="hidden h-16 w-16 rounded-full sm:block" src={data.profile.avatarUrl} alt="" />
+                      <div>
+                        <div className="flex items-center">
+                          <img className="h-16 w-16 rounded-full sm:hidden" src={data.profile.avatarUrl} alt="" />
+                          <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
+                            It's Reviewtime, {data.profile.name}!
+                          </h1>
+                        </div>
+                        <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                          <dt className="sr-only">Company</dt>
+                          <dd className="flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6">
+                            <BuildingOfficeIcon
+                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            {data.organization}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <Outlet />
           </main>
         </div>
       </div>
     </>
-  )
+  );
 }
