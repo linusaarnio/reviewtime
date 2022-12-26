@@ -42,7 +42,7 @@ const ReviewingPage = () => {
   const data = useLoaderData() as Data;
 
   return (
-    <div className="overflow-hidden bg-white shadow sm:rounded-md">
+    <div className="overflow-hidden bg-white shadow sm:rounded-md mt-5">
       <ul className="divide-y divide-gray-200">
         {data.pullRequests.map((pr) => (
           <li key={pr.url}>
