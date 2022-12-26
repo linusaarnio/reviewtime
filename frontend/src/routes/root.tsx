@@ -12,6 +12,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Outlet, useLoaderData } from "react-router-dom";
+import { classNames } from "../utils";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -21,10 +22,6 @@ const navigation = [
   { name: "Documents", href: "#", icon: InboxIcon, current: false },
   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 interface Data {
   profile: {
@@ -204,23 +201,7 @@ export default function PageRoot() {
             </button>
           </div>
           <main className="flex-1 pb-8">
-            <div className="bg-white shadow">
-              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
-                <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center">
-                      <div>
-                        <div className="flex items-center">
-                          <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                            It's Reviewtime!
-                          </h1>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+           
             <Outlet />
           </main>
         </div>

@@ -1,84 +1,76 @@
-import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, FolderIcon, MapPinIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { format } from "date-fns";
+import { useLoaderData } from "react-router-dom";
+import OverdueWarningPill from "../components/OverdueWarningPill";
 
 interface PrInfo {
   title: string;
-  url: URL;
+  url: string;
   repository: string;
-  repositoryUrl: URL;
   author: string;
-  authorAvatar: URL;
+  authorAvatarUrl: string;
   reviewDue: Date;
 }
-
 interface Data {
   pullRequests: PrInfo[];
 }
 
 export const reviewingLoader: () => Promise<Data> = async () => {
-  return { pullRequests: [] };
+  return {
+    pullRequests: [
+      {
+        title: "Cool new feature",
+        url: "#",
+        repository: "fresh_application",
+        author: "linusaarnio",
+        authorAvatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4",
+        reviewDue: new Date(),
+      },
+      {
+        title: "Another funky feature",
+        url: "#",
+        repository: "legacy_application",
+        author: "linusaarnio",
+        authorAvatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4",
+        reviewDue: new Date(2022, 11, 26, 10),
+      },
+    ],
+  };
 };
 
 const ReviewingPage = () => {
-  const positions = [
-    {
-      id: 1,
-      title: "Back End Developer",
-      type: "Full-time",
-      location: "Remote",
-      department: "Engineering",
-      closeDate: "2020-01-07",
-      closeDateFull: "January 7, 2020",
-    },
-    {
-      id: 2,
-      title: "Front End Developer",
-      type: "Full-time",
-      location: "Remote",
-      department: "Engineering",
-      closeDate: "2020-01-07",
-      closeDateFull: "January 7, 2020",
-    },
-    {
-      id: 3,
-      title: "User Interface Designer",
-      type: "Full-time",
-      location: "Remote",
-      department: "Design",
-      closeDate: "2020-01-14",
-      closeDateFull: "January 14, 2020",
-    },
-  ];
+  const data = useLoaderData() as Data;
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul className="divide-y divide-gray-200">
-        {positions.map((position) => (
-          <li key={position.id}>
-            <a href="#" className="block hover:bg-gray-50">
+        {data.pullRequests.map((pr) => (
+          <li key={pr.url}>
+            <a href={pr.url} className="block hover:bg-gray-50">
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
-                  <p className="truncate text-sm font-medium text-indigo-600">{position.title}</p>
-                  <div className="ml-2 flex flex-shrink-0">
-                    <p className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                      {position.type}
-                    </p>
-                  </div>
+                  <p className="truncate text-sm font-medium text-indigo-600">{pr.title}</p>
+                  <OverdueWarningPill date={pr.reviewDue} soonDueIntervalMilliseconds={7200000} />
                 </div>
                 <div className="mt-2 sm:flex sm:justify-between">
                   <div className="sm:flex">
                     <p className="flex items-center text-sm text-gray-500">
-                      <UsersIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                      {position.department}
+                      <img
+                        className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
+                        src={pr.authorAvatarUrl}
+                        alt={pr.author}
+                      />
+                      {pr.author}
                     </p>
                     <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                      <MapPinIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                      {position.location}
+                      <FolderIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                      {pr.repository}
                     </p>
                   </div>
                   <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                     <CalendarIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
                     <p>
-                      Closing on <time dateTime={position.closeDate}>{position.closeDateFull}</time>
+                      <time dateTime={pr.reviewDue.toDateString()}>{format(pr.reviewDue, "yyyy-MM-dd HH:mm")}</time>
                     </p>
                   </div>
                 </div>
