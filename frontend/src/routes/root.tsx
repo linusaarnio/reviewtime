@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
@@ -15,20 +15,20 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData, useLocation } from "react-router-dom";
 import { classNames } from "../utils";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
-  { name: "To Review", href: "reviewing", icon: UsersIcon, current: false },
-  { name: "Your PR:s", href: "#", icon: UserIcon, current: false },
+  { name: "Dashboard", href: "/", icon: HomeIcon },
+  { name: "To Review", href: "/reviewing", icon: UsersIcon },
+  { name: "Your PR:s", href: "#", icon: UserIcon },
 ];
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
+  { name: "Your Profile", href: "#" },
+  { name: "Settings", href: "#" },
+  { name: "Sign out", href: "#" },
+];
 
 interface Data {
   profile: {
@@ -39,15 +39,29 @@ interface Data {
 }
 
 export const rootLoader: () => Promise<Data> = async () => {
-  return { profile: { name: "Linus Aarnio", avatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4" }, organization: "LiU" };
+  return {
+    profile: { name: "Linus Aarnio", avatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4" },
+    organization: "LiU",
+  };
 };
 
 export default function PageRoot() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [headerText, setHeaderText] = useState("");
   const data = useLoaderData() as Data;
+  let location = useLocation();
+
+  useEffect(() => {
+    const currentPage = navigation.find((page) => page.href === location.pathname);
+    if (currentPage === undefined) {
+      setHeaderText("");
+    } else {
+      setHeaderText(currentPage.name);
+    }
+  }, [location]);
+
   return (
     <>
-
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
@@ -108,16 +122,18 @@ export default function PageRoot() {
                           key={item.name}
                           href={item.href}
                           className={classNames(
-                            item.current
-                              ? 'bg-gray-100 text-gray-900'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                            'group rounded-md py-2 px-2 flex items-center text-base font-medium'
+                            item.href === location.pathname
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group rounded-md py-2 px-2 flex items-center text-base font-medium"
                           )}
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                              'mr-4 flex-shrink-0 h-6 w-6'
+                              item.href === location.pathname
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
+                              "mr-4 flex-shrink-0 h-6 w-6"
                             )}
                             aria-hidden="true"
                           />
@@ -153,14 +169,16 @@ export default function PageRoot() {
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                      item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                      'group rounded-md py-2 px-2 flex items-center text-sm font-medium'
+                      item.href === location.pathname
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                      "group rounded-md py-2 px-2 flex items-center text-sm font-medium"
                     )}
                   >
                     <item.icon
                       className={classNames(
-                        item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
+                        item.href === location.pathname ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 flex-shrink-0 h-6 w-6"
                       )}
                       aria-hidden="true"
                     />
@@ -217,11 +235,7 @@ export default function PageRoot() {
                     <div>
                       <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src={data.profile.avatarUrl}
-                          alt=""
-                        />
+                        <img className="h-8 w-8 rounded-full" src={data.profile.avatarUrl} alt="" />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -240,8 +254,8 @@ export default function PageRoot() {
                               <a
                                 href={item.href}
                                 className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block py-2 px-4 text-sm text-gray-700'
+                                  active ? "bg-gray-100" : "",
+                                  "block py-2 px-4 text-sm text-gray-700"
                                 )}
                               >
                                 {item.name}
@@ -259,7 +273,7 @@ export default function PageRoot() {
             <main className="flex-1">
               <div className="py-6">
                 <div className="px-4 sm:px-6 md:px-0">
-                  <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+                  <h1 className="text-2xl font-semibold text-gray-900">{headerText}</h1>
                 </div>
                 <div className="px-4 sm:px-6 md:px-0">
                   <Outlet />
@@ -269,5 +283,6 @@ export default function PageRoot() {
           </div>
         </div>
       </div>
-    </>  );
+    </>
+  );
 }
