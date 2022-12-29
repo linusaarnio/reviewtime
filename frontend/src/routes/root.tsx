@@ -2,14 +2,8 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
-  Bars3Icon,
   BellIcon,
-  BuildingOfficeIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
   HomeIcon,
-  InboxIcon,
   MagnifyingGlassIcon,
   UserIcon,
   UsersIcon,
@@ -20,7 +14,7 @@ import { classNames } from "../utils";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
-  { name: "To Review", href: "/reviewing", icon: UsersIcon },
+  { name: "To Review", href: "/to-review", icon: UsersIcon },
   { name: "Your PR:s", href: "#", icon: UserIcon },
 ];
 

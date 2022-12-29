@@ -18,7 +18,7 @@ const HomePage = () => {
   const cards: OverviewCardContent[] = [
     {
       title: "Waiting for review from you",
-      href: "reviewing",
+      href: "to-review",
       icon: ClipboardDocumentListIcon,
       body: `${data.waitingFromMe} Pull Requests`,
     },

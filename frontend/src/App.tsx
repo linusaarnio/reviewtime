@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import HomePage, { homeLoader } from "./routes/home";
-import ReviewingPage, { reviewingLoader } from "./routes/reviewing";
+import ToReviewPage, { toReviewLoader } from "./routes/to-review";
 import Root, { rootLoader } from "./routes/root";
 
 const router = createBrowserRouter([
@@ -18,10 +18,10 @@ const router = createBrowserRouter([
         loader: homeLoader,
       },
       {
-        path: "/reviewing",
-        element: <ReviewingPage />,
-        loader: reviewingLoader,
-      }
+        path: "/to-review",
+        element: <ToReviewPage />,
+        loader: toReviewLoader,
+      },
     ]
   },
 ]);

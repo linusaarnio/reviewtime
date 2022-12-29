@@ -15,7 +15,7 @@ interface Data {
   pullRequests: PrInfo[];
 }
 
-export const reviewingLoader: () => Promise<Data> = async () => {
+export const toReviewLoader: () => Promise<Data> = async () => {
   return {
     pullRequests: [
       {
@@ -38,7 +38,7 @@ export const reviewingLoader: () => Promise<Data> = async () => {
   };
 };
 
-const ReviewingPage = () => {
+const ToReviewPage = () => {
   const data = useLoaderData() as Data;
 
   return (
@@ -83,4 +83,4 @@ const ReviewingPage = () => {
   );
 };
 
-export default ReviewingPage;
+export default ToReviewPage;
