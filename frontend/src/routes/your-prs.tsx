@@ -6,11 +6,11 @@ interface Data {
   pullRequests: PullRequestOverview[];
 }
 
-export const toReviewLoader: () => Promise<Data> = async () => {
+export const yourPrsLoader: () => Promise<Data> = async () => {
   return {
     pullRequests: [
       {
-        title: "Cool new feature",
+        title: "Bug riddled code",
         url: "#",
         repository: "fresh_application",
         participantName: "linusaarnio",
@@ -18,7 +18,7 @@ export const toReviewLoader: () => Promise<Data> = async () => {
         reviewDue: new Date(),
       },
       {
-        title: "Another funky feature",
+        title: "I made this, please don't roast it.",
         url: "#",
         repository: "legacy_application",
         participantName: "linusaarnio",
@@ -29,7 +29,7 @@ export const toReviewLoader: () => Promise<Data> = async () => {
   };
 };
 
-const ToReviewPage = () => {
+const YourPrsPage = () => {
   const data = useLoaderData() as Data;
 
   return (
@@ -39,4 +39,4 @@ const ToReviewPage = () => {
   );
 };
 
-export default ToReviewPage;
+export default YourPrsPage;

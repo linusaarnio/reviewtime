@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage, { homeLoader } from "./routes/home";
 import ToReviewPage, { toReviewLoader } from "./routes/to-review";
 import Root, { rootLoader } from "./routes/root";
+import YourPrsPage, { yourPrsLoader } from "./routes/your-prs";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
         path: "/to-review",
         element: <ToReviewPage />,
         loader: toReviewLoader,
+      },
+      {
+        path: "/your-prs",
+        element: <YourPrsPage />,
+        loader: yourPrsLoader,
       },
     ]
   },
