@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { App } from 'octokit';
 import { GithubController } from './github/controller/github.controller';
 import { GithubService } from './github/service/github.service';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
-  imports: [],
+  imports: [LoggerModule.forRoot()],
   controllers: [GithubController],
   providers: [
     GithubService,

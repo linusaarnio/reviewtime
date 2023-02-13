@@ -26,7 +26,9 @@
     "@octokit/types": "^9.0.0",
     "dotenv": "^16.0.3",
     "express-session": "^1.17.3",
+    "nestjs-pino": "^3.1.2",
     "octokit": "^2.0.13",
+    "pino-http": "^8.3.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },

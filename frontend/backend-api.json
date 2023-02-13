@@ -1,0 +1,124 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/github/oauth/authorize": {
+      "get": {
+        "operationId": "startAuthorization",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizeResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "github"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/github/oauth/callback": {
+      "get": {
+        "operationId": "authorizationCallback",
+        "parameters": [
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationCallbackResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "github"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "ReviewTime",
+    "description": "The ReviewTime main API",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "AuthorizeResponse": {
+        "type": "object",
+        "properties": {
+          "authorization_url": {
+            "type": "string",
+            "format": "url"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "authorization_url",
+          "token"
+        ]
+      },
+      "AuthorizationCallbackResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "login": {
+            "type": "string"
+          },
+          "installations": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "installations"
+        ]
+      }
+    }
+  }
+}

@@ -45,3 +45,5 @@ They can also exist in a .env file in the root of the repository.
 
 - SESSION_COOKIE_SECRET
 - SECURE_SESSION_COOKIE (true/false)
+
+-CREATE_OPENAPI_FILE (true/false)

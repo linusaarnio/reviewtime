@@ -18,6 +18,13 @@ export class AuthenticatedGitHubUser {
     });
   }
 
+  public async getLogin(): Promise<string> {
+    return this.authenticateAsUser.then(async (client) => {
+      const authenticatedUserResponse = await client.request('GET /user');
+      return authenticatedUserResponse.data.login;
+    });
+  }
+
   public async getInstallations(): Promise<number[]> {
     return this.authenticateAsUser.then(async (client) => {
       const installationsResponse = await client.request(

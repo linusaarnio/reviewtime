@@ -4,6 +4,7 @@ import { AuthenticatedGitHubUser } from './authenticated-github-user';
 
 interface GithubUser {
   id: number;
+  login: string;
   installations: number[];
 }
 
@@ -13,7 +14,6 @@ export class GithubService {
 
   public getAuthorizationUrl(state: string): string {
     const result = this.githubClient.oauth.getWebFlowAuthorizationUrl({
-      redirectUrl: 'http://localhost:3000/github/oauth/callback', // TODO set to frontend url (or get it from frontend with request?)
       state,
     });
     return result.url;
@@ -27,11 +27,12 @@ export class GithubService {
           new AuthenticatedGitHubUser(authentication, this.githubClient),
       );
 
-    const [id, installations] = await Promise.all([
+    const [id, login, installations] = await Promise.all([
       user.getId(),
+      user.getLogin(),
       user.getInstallations(),
     ]);
 
-    return { id, installations };
+    return { id, login, installations };
   }
 }
