@@ -5,6 +5,7 @@ import { AuthenticatedGitHubUser } from './authenticated-github-user';
 interface GithubUser {
   id: number;
   login: string;
+  avatarUrl: string;
   installations: number[];
 }
 
@@ -27,12 +28,13 @@ export class GithubService {
           new AuthenticatedGitHubUser(authentication, this.githubClient),
       );
 
-    const [id, login, installations] = await Promise.all([
+    const [id, login, avatarUrl, installations] = await Promise.all([
       user.getId(),
       user.getLogin(),
+      user.getAvatarUrl(),
       user.getInstallations(),
     ]);
 
-    return { id, login, installations };
+    return { id, login, avatarUrl, installations };
   }
 }

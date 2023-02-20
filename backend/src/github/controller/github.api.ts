@@ -13,12 +13,15 @@ export class AuthorizationCallbackRequest {
   public readonly code!: string;
 }
 
-export class AuthorizationCallbackResponse {
+export class LoggedInUserResponse {
   @ApiProperty({ type: Number })
   public readonly id!: number;
 
   @ApiProperty({ type: String })
   public readonly login!: string;
+
+  @ApiProperty({ type: String, format: 'url' })
+  public readonly avatar_url!: string;
 
   @ApiProperty({ type: Number, isArray: true })
   public readonly installations!: number[];

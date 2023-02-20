@@ -1,4 +1,7 @@
-import { PullRequestListItem, PullRequestOverview } from "./PullRequestListItem";
+import {
+  PullRequestListItem,
+  PullRequestOverview,
+} from "./PullRequestListItem";
 
 interface Props {
   pullRequests: PullRequestOverview[];

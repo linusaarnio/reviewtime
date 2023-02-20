@@ -54,10 +54,58 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationCallbackResponse"
+                  "$ref": "#/components/schemas/LoggedInUserResponse"
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "github"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/github/user": {
+      "get": {
+        "operationId": "getLoggedInUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedInUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "github"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/github/logout": {
+      "get": {
+        "operationId": "logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
@@ -93,7 +141,7 @@
           "authorization_url"
         ]
       },
-      "AuthorizationCallbackResponse": {
+      "LoggedInUserResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -101,6 +149,10 @@
           },
           "login": {
             "type": "string"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "url"
           },
           "installations": {
             "type": "array",
@@ -112,6 +164,7 @@
         "required": [
           "id",
           "login",
+          "avatar_url",
           "installations"
         ]
       }

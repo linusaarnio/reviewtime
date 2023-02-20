@@ -21,8 +21,13 @@ export const PullRequestListItem = ({ pullRequest }: Props) => {
       <a href={pullRequest.url} className="block hover:bg-gray-50">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between">
-            <p className="truncate text-sm font-medium text-indigo-600">{pullRequest.title}</p>
-            <OverdueWarningPill date={pullRequest.reviewDue} soonDueIntervalMilliseconds={7200000} />
+            <p className="truncate text-sm font-medium text-indigo-600">
+              {pullRequest.title}
+            </p>
+            <OverdueWarningPill
+              date={pullRequest.reviewDue}
+              soonDueIntervalMilliseconds={7200000}
+            />
           </div>
           <div className="mt-2 sm:flex sm:justify-between">
             <div className="sm:flex">
@@ -35,12 +40,18 @@ export const PullRequestListItem = ({ pullRequest }: Props) => {
                 {pullRequest.participantName}
               </p>
               <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                <FolderIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                <FolderIcon
+                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  aria-hidden="true"
+                />
                 {pullRequest.repository}
               </p>
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-              <CalendarIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+              <CalendarIcon
+                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                aria-hidden="true"
+              />
               <p>
                 <time dateTime={pullRequest.reviewDue.toDateString()}>
                   {format(pullRequest.reviewDue, "yyyy-MM-dd HH:mm")}

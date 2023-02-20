@@ -16,8 +16,15 @@ const OverdueWarningPill = ({ date, soonDueIntervalMilliseconds }: Props) => {
 
   return (
     <div className="ml-2 flex flex-shrink-0">
-      <p className={classNames("inline-flex rounded-full px-2 text-xs font-semibold leading-5", color)}>
-        {date.valueOf() > Date.now() ? `Due in ${formatDistanceToNow(date)}` : "Overdue"}
+      <p
+        className={classNames(
+          "inline-flex rounded-full px-2 text-xs font-semibold leading-5",
+          color
+        )}
+      >
+        {date.valueOf() > Date.now()
+          ? `Due in ${formatDistanceToNow(date)}`
+          : "Overdue"}
       </p>
     </div>
   );

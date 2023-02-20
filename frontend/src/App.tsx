@@ -1,15 +1,24 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 
 import HomePage, { homeLoader } from "./routes/home";
 import ToReviewPage, { toReviewLoader } from "./routes/to-review";
-import Root, { rootLoader } from "./routes/root";
+import AuthenticatedRoot, { authenticatedRootLoader } from "./routes/root";
 import YourPrsPage, { yourPrsLoader } from "./routes/your-prs";
 import LoginPage, { loginLoader } from "./routes/login";
-import LoginCallBackPage, { loginCallbackLoader } from "./routes/login-callback";
 
-import { BackendApi } from "./generated";
+import { BackendApi, LoggedInUserResponse } from "./generated";
+import React, { useState } from "react";
+import Logout from "./routes/logout";
+import Callback from "./routes/callback";
 
-const createRouter = (api: BackendApi) => {
+const createRouter = (
+  api: BackendApi,
+  setUser: (response: LoggedInUserResponse | undefined) => void
+) => {
   return createBrowserRouter([
     {
       path: "/login",
@@ -18,20 +27,26 @@ const createRouter = (api: BackendApi) => {
     },
     {
       path: "/oauth/callback",
-      element: <LoginCallBackPage />,
-      loader: ({ request }) => {
+      element: <Callback setUser={setUser} />,
+      loader: async ({ request }) => {
         const url = new URL(request.url);
-        return loginCallbackLoader(
-          api,
+        return api.github.authorizationCallback(
           url.searchParams.get("state") as string,
           url.searchParams.get("code") as string
         );
       },
     },
     {
+      path: "/logout",
+      loader: () => {
+        api.github.logout();
+      },
+      element: <Logout />,
+    },
+    {
       path: "/",
-      element: <Root />,
-      loader: rootLoader,
+      element: <AuthenticatedRoot api={api} />, // TODO set user in element
+
       children: [
         {
           path: "/",
@@ -53,8 +68,29 @@ const createRouter = (api: BackendApi) => {
   ]);
 };
 
-export default function App() {
-  const router = createRouter(new BackendApi({ BASE: process.env.REACT_APP_BACKEND_URL, CREDENTIALS: "include", WITH_CREDENTIALS: true }));
+export const UserContext = React.createContext<{
+  user: LoggedInUserResponse | undefined;
+  setUser: (user: LoggedInUserResponse) => void;
+  logout: () => void;
+}>({ user: undefined, setUser: (user) => {}, logout: () => {} });
 
-  return <RouterProvider router={router} />;
+export default function App() {
+  const [user, setUser] = useState<LoggedInUserResponse>();
+
+  const router = createRouter(
+    new BackendApi({
+      BASE: process.env.REACT_APP_BACKEND_URL,
+      CREDENTIALS: "include",
+      WITH_CREDENTIALS: true,
+    }),
+    setUser
+  );
+
+  return (
+    <UserContext.Provider
+      value={{ user, setUser, logout: () => setUser(undefined) }}
+    >
+      <RouterProvider router={router} />;
+    </UserContext.Provider>
+  );
 }

@@ -14,7 +14,8 @@ export const yourPrsLoader: () => Promise<Data> = async () => {
         url: "#",
         repository: "fresh_application",
         participantName: "linusaarnio",
-        participantAvatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4",
+        participantAvatarUrl:
+          "https://avatars.githubusercontent.com/u/42450444?v=4",
         reviewDue: new Date(),
       },
       {
@@ -22,7 +23,8 @@ export const yourPrsLoader: () => Promise<Data> = async () => {
         url: "#",
         repository: "legacy_application",
         participantName: "linusaarnio",
-        participantAvatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4",
+        participantAvatarUrl:
+          "https://avatars.githubusercontent.com/u/42450444?v=4",
         reviewDue: new Date(2022, 11, 26, 10),
       },
     ],

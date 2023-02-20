@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
@@ -9,8 +9,10 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLoaderData, useLocation } from "react-router-dom";
 import { classNames } from "../utils";
+import { BackendApi, LoggedInUserResponse, ApiError } from "../generated";
+import { UserContext } from "../App";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -21,32 +23,40 @@ const navigation = [
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Sign out", href: "/logout" },
 ];
 
-interface Data {
-  profile: {
-    name: string;
-    avatarUrl: string;
-  };
-  organization: string;
-}
-
-export const rootLoader: () => Promise<Data> = async () => {
-  return {
-    profile: { name: "Linus Aarnio", avatarUrl: "https://avatars.githubusercontent.com/u/42450444?v=4" },
-    organization: "LiU",
-  };
+export const authenticatedRootLoader: (
+  api: BackendApi
+) => Promise<LoggedInUserResponse | undefined> = async (api) => {
+  try {
+    const response = await api.github.getLoggedInUser();
+    return response;
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 401) {
+      return undefined;
+    }
+    throw e;
+  }
 };
 
-export default function PageRoot() {
+type Props = {
+  api: BackendApi;
+};
+
+export default function AuthenticatedRoot({ api }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [headerText, setHeaderText] = useState("");
-  const data = useLoaderData() as Data;
   let location = useLocation();
+  let [unauthenticated, setUnauthenticated] = useState(false);
+  let [user, setUser] = useState<LoggedInUserResponse>();
+
+  console.log("Hello");
 
   useEffect(() => {
-    const currentPage = navigation.find((page) => page.href === location.pathname);
+    const currentPage = navigation.find(
+      (page) => page.href === location.pathname
+    );
     if (currentPage === undefined) {
       setHeaderText("");
     } else {
@@ -54,11 +64,37 @@ export default function PageRoot() {
     }
   }, [location]);
 
+  useEffect(() => {
+    const existingUser = localStorage.getItem("user");
+    if (existingUser !== null) {
+      setUser(JSON.parse(existingUser));
+      return;
+    }
+    api.github
+      .getLoggedInUser()
+      .then((user) => {
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+      })
+      .catch((reason) => setUnauthenticated(true));
+  }, [api.github]);
+
+  if (unauthenticated) {
+    return <Navigate to={"/login"} />;
+  }
+  if (user === undefined) {
+    return <div />;
+  }
+
   return (
     <>
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
+          <Dialog
+            as="div"
+            className="relative z-40 md:hidden"
+            onClose={setSidebarOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -98,7 +134,10 @@ export default function PageRoot() {
                         onClick={() => setSidebarOpen(false)}
                       >
                         <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                        <XMarkIcon
+                          className="h-6 w-6 text-white"
+                          aria-hidden="true"
+                        />
                       </button>
                     </div>
                   </Transition.Child>
@@ -171,7 +210,9 @@ export default function PageRoot() {
                   >
                     <item.icon
                       className={classNames(
-                        item.href === location.pathname ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
+                        item.href === location.pathname
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
                         "mr-3 flex-shrink-0 h-6 w-6"
                       )}
                       aria-hidden="true"
@@ -203,7 +244,10 @@ export default function PageRoot() {
                     </label>
                     <div className="relative w-full text-gray-400 focus-within:text-gray-600">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                        <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
+                        <MagnifyingGlassIcon
+                          className="h-5 w-5"
+                          aria-hidden="true"
+                        />
                       </div>
                       <input
                         id="search-field"
@@ -229,7 +273,11 @@ export default function PageRoot() {
                     <div>
                       <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="sr-only">Open user menu</span>
-                        <img className="h-8 w-8 rounded-full" src={data.profile.avatarUrl} alt="" />
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src={user.avatar_url}
+                          alt=""
+                        />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -267,7 +315,9 @@ export default function PageRoot() {
             <main className="flex-1">
               <div className="py-6">
                 <div className="px-4 sm:px-6 md:px-0">
-                  <h1 className="text-2xl font-semibold text-gray-900">{headerText}</h1>
+                  <h1 className="text-2xl font-semibold text-gray-900">
+                    {headerText}
+                  </h1>
                 </div>
                 <div className="px-4 sm:px-6 md:px-0">
                   <Outlet />
