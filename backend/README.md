@@ -36,6 +36,7 @@ To run the application, the following environment variables need to be set.
 They can also exist in a .env file in the root of the repository.
 
 - REVIEWTIME_API_PORT
+- DATABASE_URL (postgres connection url)
 
 - GITHUB_APP_ID
 - GITHUB_APP_PRIVATE_KEY

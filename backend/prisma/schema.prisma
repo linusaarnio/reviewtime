@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id
+  login String
+  avatarUrl String
+  installations Installation[]
+  pullRequests PullRequest[]
+  reviewRequests ReviewRequest[]
+  reviews Review[]
+}
+
+model Installation {
+  id Int @id
+  users User[]
+  repositories Repository[]
+  pullRequests PullRequest[]
+}
+
+model Repository {
+  id Int @id
+  name String
+  installation Installation @relation(fields: [installationId], references: [id])
+  installationId Int
+  pullRequests PullRequest[]
+}
+
+model PullRequest {
+  id Int @id
+  number Int
+  title String
+  repository Repository @relation(fields: [repositoryId], references: [id])
+  repositoryId Int
+  installation Installation @relation(fields: [installationId], references: [id])
+  installationId Int
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  url String
+  reviewRequests ReviewRequest[]
+  reviews Review[]
+}
+
+model ReviewRequest {
+  id Int @id @default(autoincrement())
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
+  pullRequestId Int
+  requestedAt DateTime
+  review Review? @relation(fields: [reviewId], references: [id])
+  reviewId Int? @unique
+  reviewer User @relation(fields: [reviewerId], references: [id])
+  reviewerId Int
+}
+
+model Review {
+  id Int @id
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
+  pullRequestId Int
+  reviewRequest ReviewRequest?
+  submittedAt DateTime
+  reviewer User @relation(fields: [reviewerId], references: [id])
+  reviewerId Int
+}
+
