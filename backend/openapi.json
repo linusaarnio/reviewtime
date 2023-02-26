@@ -117,6 +117,58 @@
           }
         ]
       }
+    },
+    "/pullrequests/authored": {
+      "get": {
+        "operationId": "getAuthoredByUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthoredByUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pullrequest"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/pullrequests/review-requested": {
+      "get": {
+        "operationId": "getReviewRequestedFromUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewRequestedFromUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pullrequest"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -166,6 +218,136 @@
           "login",
           "avatar_url",
           "installations"
+        ]
+      },
+      "ReviewRequest": {
+        "type": "object",
+        "properties": {
+          "dueAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "reviewer": {
+            "type": "object",
+            "properties": {
+              "avatarUrl": {
+                "required": true,
+                "type": "string"
+              },
+              "login": {
+                "required": true,
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "dueAt",
+          "reviewer"
+        ]
+      },
+      "AuthoredPullRequest": {
+        "type": "object",
+        "properties": {
+          "reviewRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewRequest"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "required": true,
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "reviewRequests",
+          "title",
+          "url",
+          "repository"
+        ]
+      },
+      "AuthoredByUserResponse": {
+        "type": "object",
+        "properties": {
+          "pullRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthoredPullRequest"
+            }
+          }
+        },
+        "required": [
+          "pullRequests"
+        ]
+      },
+      "ReviewingPullRequest": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "object",
+            "properties": {
+              "login": {
+                "required": true,
+                "type": "string"
+              },
+              "avatarUrl": {
+                "required": true,
+                "type": "string"
+              }
+            }
+          },
+          "reviewDueAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "required": true,
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "author",
+          "reviewDueAt",
+          "title",
+          "url",
+          "repository"
+        ]
+      },
+      "ReviewRequestedFromUserResponse": {
+        "type": "object",
+        "properties": {
+          "pullRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewingPullRequest"
+            }
+          }
+        },
+        "required": [
+          "pullRequests"
         ]
       }
     }
