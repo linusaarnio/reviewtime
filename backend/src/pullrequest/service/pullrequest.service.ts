@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
   AuthoredPullRequest,
+  CreatePullRequest,
+  CreateReviewRequest,
   ReviewingPullRequest,
 } from '../model/pullrequest.model';
 import { PullRequestRepository } from '../repository/pullrequest.repository';
@@ -30,11 +32,22 @@ export class PullRequestService {
     const pullRequests = await this.repo.getByReviewAssignee(userId);
     return pullRequests.map((pr) => ({
       ...pr,
-      reviewDueAt: this.getDueTime(pr.reviewRequests.at(0).requestedAt),
+      reviewDueAt: this.getDueTime(pr.reviewRequests.at(0)?.requestedAt),
     }));
   }
 
-  private getDueTime(requestTime: Date): Date {
+  public async createPullRequest(pullRequest: CreatePullRequest) {
+    await this.repo.createPullRequest(pullRequest);
+  }
+
+  public async createReviewRequest(reviewRequest: CreateReviewRequest) {
+    await this.repo.createReviewRequest(reviewRequest, new Date());
+  }
+
+  private getDueTime(requestTime?: Date): Date {
+    if (requestTime === undefined) {
+      return new Date();
+    }
     return new Date(requestTime.getTime() + 1000 * 60 * this.dueAfterMinutes);
   }
 }

@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id Int @id
-  login String
+  login String @unique
   avatarUrl String
   installations Installation[]
   pullRequests PullRequest[]

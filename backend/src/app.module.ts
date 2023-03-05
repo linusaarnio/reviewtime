@@ -7,14 +7,26 @@ import { PullRequestController } from './pullrequest/controller/pullrequest.cont
 import { PullRequestService } from './pullrequest/service/pullrequest.service';
 import { PullRequestRepository } from './pullrequest/repository/pullrequest.repository';
 import { PrismaClient } from '@prisma/client';
+import { Webhooks } from '@octokit/webhooks';
+import { UserService } from './user/service/user.service';
+import { UserRepository } from './user/repository/user.repository';
+import { UserController } from './user/controller/user.controller';
+import { GithubWebookController } from './github/controller/github.webhook.controller';
 
 @Module({
   imports: [LoggerModule.forRoot()],
-  controllers: [GithubController, PullRequestController],
+  controllers: [
+    GithubWebookController,
+    GithubController,
+    PullRequestController,
+    UserController,
+  ],
   providers: [
     GithubService,
     PullRequestService,
     PullRequestRepository,
+    UserService,
+    UserRepository,
     PrismaClient,
     {
       provide: App,
@@ -27,10 +39,13 @@ import { PrismaClient } from '@prisma/client';
             clientId: process.env.GITHUB_APP_OAUTH_CLIENT_ID,
             clientSecret: process.env.GITHUB_APP_OAUTH_CLIENT_SECRET,
           },
-          webhooks: {
-            secret: process.env.GITHUB_APP_WEBHOOK_SECRET,
-          },
         }),
+    },
+    {
+      provide: Webhooks,
+      inject: [],
+      useFactory: () =>
+        new Webhooks({ secret: process.env.GITHUB_APP_WEBHOOK_SECRET }),
     },
   ],
 })

@@ -1,6 +1,48 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/github/webhooks": {
+      "post": {
+        "operationId": "receiveWebhook",
+        "parameters": [
+          {
+            "name": "x-github-delivery",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-github-event",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-hub-signature-256",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "github"
+        ]
+      }
+    },
     "/github/oauth/authorize": {
       "get": {
         "operationId": "startAuthorization",
@@ -50,42 +92,9 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoggedInUserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "github"
-        ],
-        "security": [
-          {
-            "cookie": []
-          }
-        ]
-      }
-    },
-    "/github/user": {
-      "get": {
-        "operationId": "getLoggedInUser",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoggedInUserResponse"
-                }
-              }
-            }
+            "description": ""
           },
-          "401": {
+          "403": {
             "description": ""
           }
         },
@@ -169,6 +178,35 @@
           }
         ]
       }
+    },
+    "/user/user": {
+      "get": {
+        "operationId": "getLoggedInUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedInUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -185,39 +223,11 @@
         "type": "object",
         "properties": {
           "authorization_url": {
-            "type": "string",
-            "format": "url"
+            "type": "string"
           }
         },
         "required": [
           "authorization_url"
-        ]
-      },
-      "LoggedInUserResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "login": {
-            "type": "string"
-          },
-          "avatar_url": {
-            "type": "string",
-            "format": "url"
-          },
-          "installations": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "login",
-          "avatar_url",
-          "installations"
         ]
       },
       "ReviewRequest": {
@@ -348,6 +358,32 @@
         },
         "required": [
           "pullRequests"
+        ]
+      },
+      "LoggedInUserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "login": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string"
+          },
+          "installations": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "avatar_url",
+          "installations"
         ]
       }
     }

@@ -4,20 +4,15 @@ import {
   Get,
   Query,
   Session,
-  UnauthorizedException,
 } from '@nestjs/common';
-import {
-  AuthorizationCallbackRequest,
-  LoggedInUserResponse,
-  AuthorizeResponse,
-} from './github.api';
+import { AuthorizationCallbackRequest, AuthorizeResponse } from './github.api';
 import { GithubService } from '../service/github.service';
 import { createState } from '../utils/github.utils';
 import {
   ApiCookieAuth,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 @ApiCookieAuth()
@@ -36,43 +31,22 @@ export class GithubController {
     return { authorization_url: this.githubService.getAuthorizationUrl(state) };
   }
 
-  @ApiOkResponse({ type: LoggedInUserResponse })
+  @ApiOkResponse()
+  @ApiForbiddenResponse()
   @Get('/oauth/callback')
   public async authorizationCallback(
     @Query() query: AuthorizationCallbackRequest,
     @Session() session: Record<string, any>,
-  ): Promise<LoggedInUserResponse> {
+  ): Promise<void> {
     if (query.state !== session.state) {
       throw new ForbiddenException('Invalid state value');
     }
-
-    const user = await this.githubService.authenticate(query.code);
-    session.user = user;
-    return {
-      id: user.id,
-      login: user.login,
-      avatar_url: user.avatarUrl,
-      installations: user.installations,
-    };
-  }
-
-  @ApiOkResponse({ type: LoggedInUserResponse })
-  @ApiUnauthorizedResponse()
-  @Get('/user')
-  public async getLoggedInUser(
-    @Session() session: Record<string, any>,
-  ): Promise<LoggedInUserResponse> {
-    const user = session.user;
-    if (user === undefined) {
-      throw new UnauthorizedException('Unauthorized');
+    try {
+      const userId = await this.githubService.authenticate(query.code);
+      session.userId = userId;
+    } catch {
+      throw new ForbiddenException('Failed to authenticate with GitHub');
     }
-
-    return {
-      id: user.id,
-      login: user.login,
-      avatar_url: user.avatarUrl,
-      installations: user.installations,
-    };
   }
 
   @ApiOkResponse()

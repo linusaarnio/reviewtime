@@ -23,3 +23,18 @@ export class ReviewRequest {
     login: string;
   };
 }
+
+export interface CreatePullRequest {
+  id: number;
+  number: number;
+  title: string;
+  repositoryId: number;
+  installationId: number;
+  authorId: number;
+  url: string;
+}
+
+export interface CreateReviewRequest {
+  pullRequestId: number;
+  reviewerId: number;
+}

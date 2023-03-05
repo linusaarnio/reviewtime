@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import {
+  CreatePullRequest,
+  CreateReviewRequest,
+} from '../model/pullrequest.model';
 
 interface PullRequestResult {
   title: string;
@@ -62,5 +66,22 @@ export class PullRequestRepository {
       where: { reviewRequests: { some: { reviewerId: userId } } },
     });
     return results;
+  }
+
+  public async createPullRequest(
+    pullRequest: CreatePullRequest,
+  ): Promise<void> {
+    await this.prisma.pullRequest.create({
+      data: pullRequest,
+    });
+  }
+
+  public async createReviewRequest(
+    reviewRequest: CreateReviewRequest,
+    requestedAt: Date,
+  ): Promise<void> {
+    await this.prisma.reviewRequest.create({
+      data: { ...reviewRequest, requestedAt },
+    });
   }
 }
