@@ -12,6 +12,8 @@ import { UserService } from './user/service/user.service';
 import { UserRepository } from './user/repository/user.repository';
 import { UserController } from './user/controller/user.controller';
 import { GithubWebookController } from './github/controller/github.webhook.controller';
+import { InstallationService } from './installation/service/installation.service';
+import { InstallationRepository } from './installation/repository/installation.repository';
 
 @Module({
   imports: [LoggerModule.forRoot()],
@@ -27,6 +29,8 @@ import { GithubWebookController } from './github/controller/github.webhook.contr
     PullRequestRepository,
     UserService,
     UserRepository,
+    InstallationService,
+    InstallationRepository,
     PrismaClient,
     {
       provide: App,

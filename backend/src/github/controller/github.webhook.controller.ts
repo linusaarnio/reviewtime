@@ -1,11 +1,16 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { emitterEventNames, Webhooks } from '@octokit/webhooks';
+import { InstallationService } from 'src/installation/service/installation.service';
 import { PullRequestService } from 'src/pullrequest/service/pullrequest.service';
 import { UserService } from 'src/user/service/user.service';
 
 type EventName = (typeof emitterEventNames)[number];
 
+interface Repository {
+  id: number;
+  name: string;
+}
 @ApiTags('github')
 @Controller('/github/webhooks')
 export class GithubWebookController {
@@ -13,6 +18,7 @@ export class GithubWebookController {
     private readonly githubWebhooksClient: Webhooks,
     private readonly pullRequestService: PullRequestService,
     private readonly userService: UserService,
+    private readonly installationService: InstallationService,
   ) {
     this.registerWebhooks();
   }
@@ -37,6 +43,8 @@ export class GithubWebookController {
     console.log('Registering webhooks');
     this.registerPullRequestOpened();
     this.registerReviewRequested();
+    this.registerInstallationActions();
+    this.registerInstallationRepositoriesActions();
   }
 
   private registerPullRequestOpened() {
@@ -90,5 +98,66 @@ export class GithubWebookController {
         });
       },
     );
+  }
+
+  private registerInstallationActions() {
+    this.githubWebhooksClient.on('installation', async ({ payload }) => {
+      const id = payload.installation.id;
+      switch (payload.action) {
+        case 'created':
+          await this.installationService.createInstallation({ id });
+          if (payload.repositories !== undefined) {
+            await this.createInstallationRepositories(id, payload.repositories);
+          }
+          break;
+        case 'deleted':
+          this.installationService.deleteInstallation(id);
+          break;
+        default:
+          console.log(
+            `received unhandled installation action: ${payload.action}`,
+          );
+          return; // TODO handle suspend and unsuspend
+      }
+    });
+  }
+
+  private registerInstallationRepositoriesActions() {
+    this.githubWebhooksClient.on(
+      'installation_repositories',
+      async ({ payload }) => {
+        const installationId = payload.installation.id;
+        switch (payload.action) {
+          case 'added':
+            await this.createInstallationRepositories(
+              installationId,
+              payload.repositories_added,
+            );
+          case 'removed':
+            await this.deleteInstallationRepositories(
+              payload.repositories_removed,
+            );
+        }
+      },
+    );
+  }
+
+  private async createInstallationRepositories(
+    installationId: number,
+    repositories: Repository[],
+  ) {
+    for (const repository of repositories) {
+      await this.installationService.createRepository({
+        id: repository.id,
+        name: repository.name,
+        installationId,
+      });
+    }
+  }
+
+  private async deleteInstallationRepositories(repositories: Repository[]) {
+    for (const repository of repositories) {
+      await this.installationService.deleteRepository(repository.id);
+    }
   }
 }
