@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
@@ -9,10 +9,9 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Navigate, Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { Outlet, useLoaderData, useLocation } from "react-router-dom";
 import { classNames } from "../utils";
-import { BackendApi, LoggedInUserResponse, ApiError } from "../generated";
-import { UserContext } from "../App";
+import { BackendApi, LoggedInUserResponse } from "../generated";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -29,29 +28,21 @@ const userNavigation = [
 export const authenticatedRootLoader: (
   api: BackendApi
 ) => Promise<LoggedInUserResponse | undefined> = async (api) => {
-  try {
-    const response = await api.github.getLoggedInUser();
-    return response;
-  } catch (e) {
-    if (e instanceof ApiError && e.status === 401) {
-      return undefined;
-    }
-    throw e;
+  const existingUser = localStorage.getItem("user");
+  if (existingUser !== null) {
+    return JSON.parse(existingUser);
   }
+  return api.user.getLoggedInUser().then((user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    return user;
+  });
 };
 
-type Props = {
-  api: BackendApi;
-};
-
-export default function AuthenticatedRoot({ api }: Props) {
+export default function AuthenticatedRoot() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [headerText, setHeaderText] = useState("");
   let location = useLocation();
-  let [unauthenticated, setUnauthenticated] = useState(false);
-  let [user, setUser] = useState<LoggedInUserResponse>();
-
-  console.log("Hello");
+  const user = useLoaderData() as LoggedInUserResponse;
 
   useEffect(() => {
     const currentPage = navigation.find(
@@ -64,24 +55,6 @@ export default function AuthenticatedRoot({ api }: Props) {
     }
   }, [location]);
 
-  useEffect(() => {
-    const existingUser = localStorage.getItem("user");
-    if (existingUser !== null) {
-      setUser(JSON.parse(existingUser));
-      return;
-    }
-    api.github
-      .getLoggedInUser()
-      .then((user) => {
-        setUser(user);
-        localStorage.setItem("user", JSON.stringify(user));
-      })
-      .catch((reason) => setUnauthenticated(true));
-  }, [api.github]);
-
-  if (unauthenticated) {
-    return <Navigate to={"/login"} />;
-  }
   if (user === undefined) {
     return <div />;
   }

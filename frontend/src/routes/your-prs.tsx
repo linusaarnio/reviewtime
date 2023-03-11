@@ -1,34 +1,33 @@
 import { useLoaderData } from "react-router-dom";
 import { PullRequestList } from "../components/PullRequestList";
 import { PullRequestOverview } from "../components/PullRequestListItem";
+import { AuthoredPullRequest, BackendApi } from "../generated";
 
 interface Data {
   pullRequests: PullRequestOverview[];
 }
 
-export const yourPrsLoader: () => Promise<Data> = async () => {
-  return {
-    pullRequests: [
-      {
-        title: "Bug riddled code",
-        url: "#",
-        repository: "fresh_application",
-        participantName: "linusaarnio",
-        participantAvatarUrl:
-          "https://avatars.githubusercontent.com/u/42450444?v=4",
-        reviewDue: new Date(),
-      },
-      {
-        title: "I made this, please don't roast it.",
-        url: "#",
-        repository: "legacy_application",
-        participantName: "linusaarnio",
-        participantAvatarUrl:
-          "https://avatars.githubusercontent.com/u/42450444?v=4",
-        reviewDue: new Date(2022, 11, 26, 10),
-      },
-    ],
-  };
+export const yourPrsLoader: (api: BackendApi) => Promise<Data> = async (
+  api
+) => {
+  const prResponse = await api.pullrequest.getAuthoredByUser();
+  const pullRequests: PullRequestOverview[] = prResponse.pullRequests.flatMap(
+    (pr) => getOnePrOverviewPerReviewRequest(pr)
+  );
+  return { pullRequests };
+};
+
+const getOnePrOverviewPerReviewRequest: (
+  pr: AuthoredPullRequest
+) => PullRequestOverview[] = (pr) => {
+  return pr.reviewRequests.map((reviewRequest) => ({
+    title: pr.title,
+    url: pr.url,
+    repository: pr.repository.name,
+    participantAvatarUrl: reviewRequest.reviewer.avatarUrl,
+    participantName: reviewRequest.reviewer.login,
+    reviewDue: new Date(reviewRequest.dueAt),
+  }));
 };
 
 const YourPrsPage = () => {

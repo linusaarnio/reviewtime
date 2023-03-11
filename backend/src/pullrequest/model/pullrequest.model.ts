@@ -1,7 +1,11 @@
 class PullRequest {
   title: string;
   url: string;
-  repository: { name: string };
+  repository: Repository;
+}
+
+class Repository {
+  name: string;
 }
 
 export class AuthoredPullRequest extends PullRequest {
@@ -9,19 +13,18 @@ export class AuthoredPullRequest extends PullRequest {
 }
 
 export class ReviewingPullRequest extends PullRequest {
-  author: {
-    login: string;
-    avatarUrl: string;
-  };
+  author: User;
   reviewDueAt: Date;
+}
+
+class User {
+  login: string;
+  avatarUrl: string;
 }
 
 export class ReviewRequest {
   dueAt: Date;
-  reviewer: {
-    avatarUrl: string;
-    login: string;
-  };
+  reviewer: User;
 }
 
 export interface CreatePullRequest {

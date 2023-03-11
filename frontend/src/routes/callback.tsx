@@ -1,11 +1,6 @@
 import { Navigate, useLoaderData } from "react-router-dom";
-import { LoggedInUserResponse } from "../generated";
 
-type Props = {
-  setUser: (user: LoggedInUserResponse) => void;
-};
-
-const Callback = ({ setUser }: Props) => {
+const Callback = () => {
   return <Navigate to={"/"} />;
 };
 

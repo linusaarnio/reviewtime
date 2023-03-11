@@ -33,7 +33,7 @@ export class PullRequestService {
     const pullRequests = await this.repo.getByReviewAssignee(userId);
     return pullRequests.map((pr) => ({
       ...pr,
-      reviewDueAt: this.getDueTime(pr.reviewRequests.at(0)?.requestedAt),
+      reviewDueAt: this.getDueTime(pr.reviewRequests[0].requestedAt),
     }));
   }
 

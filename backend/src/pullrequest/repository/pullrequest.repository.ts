@@ -64,7 +64,11 @@ export class PullRequestRepository {
           },
         },
       },
-      where: { reviewRequests: { some: { reviewerId: userId } } },
+      where: {
+        reviewRequests: {
+          some: { AND: [{ review: null }, { reviewerId: userId }] },
+        },
+      },
     });
     return results;
   }

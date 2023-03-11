@@ -230,6 +230,21 @@
           "authorization_url"
         ]
       },
+      "User": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "avatarUrl"
+        ]
+      },
       "ReviewRequest": {
         "type": "object",
         "properties": {
@@ -238,22 +253,23 @@
             "type": "string"
           },
           "reviewer": {
-            "type": "object",
-            "properties": {
-              "avatarUrl": {
-                "required": true,
-                "type": "string"
-              },
-              "login": {
-                "required": true,
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/User"
           }
         },
         "required": [
           "dueAt",
           "reviewer"
+        ]
+      },
+      "Repository": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "AuthoredPullRequest": {
@@ -272,13 +288,7 @@
             "type": "string"
           },
           "repository": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "required": true,
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/Repository"
           }
         },
         "required": [
@@ -306,17 +316,7 @@
         "type": "object",
         "properties": {
           "author": {
-            "type": "object",
-            "properties": {
-              "login": {
-                "required": true,
-                "type": "string"
-              },
-              "avatarUrl": {
-                "required": true,
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/User"
           },
           "reviewDueAt": {
             "format": "date-time",
@@ -329,13 +329,7 @@
             "type": "string"
           },
           "repository": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "required": true,
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/Repository"
           }
         },
         "required": [

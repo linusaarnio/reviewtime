@@ -1,34 +1,27 @@
 import { useLoaderData } from "react-router-dom";
 import { PullRequestList } from "../components/PullRequestList";
 import { PullRequestOverview } from "../components/PullRequestListItem";
+import { BackendApi } from "../generated";
 
 interface Data {
   pullRequests: PullRequestOverview[];
 }
 
-export const toReviewLoader: () => Promise<Data> = async () => {
-  return {
-    pullRequests: [
-      {
-        title: "Cool new feature",
-        url: "#",
-        repository: "fresh_application",
-        participantName: "linusaarnio",
-        participantAvatarUrl:
-          "https://avatars.githubusercontent.com/u/42450444?v=4",
-        reviewDue: new Date(),
-      },
-      {
-        title: "Another funky feature",
-        url: "#",
-        repository: "legacy_application",
-        participantName: "linusaarnio",
-        participantAvatarUrl:
-          "https://avatars.githubusercontent.com/u/42450444?v=4",
-        reviewDue: new Date(2022, 11, 26, 10),
-      },
-    ],
-  };
+export const toReviewLoader: (api: BackendApi) => Promise<Data> = async (
+  api: BackendApi
+) => {
+  const prResponse = await api.pullrequest.getReviewRequestedFromUser();
+  const pullRequests: PullRequestOverview[] = prResponse.pullRequests.map(
+    (pr) => ({
+      participantAvatarUrl: pr.author.avatarUrl,
+      participantName: pr.author.login,
+      repository: pr.repository.name,
+      title: pr.title,
+      reviewDue: new Date(pr.reviewDueAt),
+      url: pr.url,
+    })
+  );
+  return { pullRequests };
 };
 
 const ToReviewPage = () => {
