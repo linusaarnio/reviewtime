@@ -55,8 +55,7 @@ model ReviewRequest {
   pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
   pullRequestId Int
   requestedAt DateTime
-  review Review? @relation(fields: [reviewId], references: [id])
-  reviewId Int? @unique
+  review Review?
   reviewer User @relation(fields: [reviewerId], references: [id])
   reviewerId Int
 }
@@ -65,7 +64,8 @@ model Review {
   id Int @id
   pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
   pullRequestId Int
-  reviewRequest ReviewRequest?
+  reviewRequest ReviewRequest? @relation(fields: [reviewRequestId], references: [id])
+  reviewRequestId Int? @unique
   submittedAt DateTime
   reviewer User @relation(fields: [reviewerId], references: [id])
   reviewerId Int

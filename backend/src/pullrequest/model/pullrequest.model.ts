@@ -38,3 +38,9 @@ export interface CreateReviewRequest {
   pullRequestId: number;
   reviewerId: number;
 }
+
+export interface CreateReview {
+  id: number;
+  pullRequestId: number;
+  reviewerId: number;
+}

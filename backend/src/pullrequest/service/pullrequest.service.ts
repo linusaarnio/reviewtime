@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   AuthoredPullRequest,
   CreatePullRequest,
+  CreateReview,
   CreateReviewRequest,
   ReviewingPullRequest,
 } from '../model/pullrequest.model';
@@ -42,6 +43,10 @@ export class PullRequestService {
 
   public async createReviewRequest(reviewRequest: CreateReviewRequest) {
     await this.repo.createReviewRequest(reviewRequest, new Date());
+  }
+
+  public async createReview(review: CreateReview) {
+    await this.repo.createReview(review, new Date());
   }
 
   private getDueTime(requestTime?: Date): Date {

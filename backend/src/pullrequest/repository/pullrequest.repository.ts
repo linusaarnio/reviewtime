@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
   CreatePullRequest,
+  CreateReview,
   CreateReviewRequest,
 } from '../model/pullrequest.model';
 
@@ -34,7 +35,7 @@ export class PullRequestRepository {
         repository: { select: { name: true } },
         author: { select: { avatarUrl: true, login: true } },
         reviewRequests: {
-          where: { reviewId: undefined },
+          where: { review: null },
           select: {
             requestedAt: true,
             reviewer: { select: { avatarUrl: true, login: true } },
@@ -56,7 +57,7 @@ export class PullRequestRepository {
         repository: { select: { name: true } },
         author: { select: { avatarUrl: true, login: true } },
         reviewRequests: {
-          where: { AND: [{ reviewId: undefined }, { reviewerId: userId }] },
+          where: { AND: [{ review: null }, { reviewerId: userId }] },
           select: {
             requestedAt: true,
             reviewer: { select: { avatarUrl: true, login: true } },
@@ -82,6 +83,20 @@ export class PullRequestRepository {
   ): Promise<void> {
     await this.prisma.reviewRequest.create({
       data: { ...reviewRequest, requestedAt },
+    });
+  }
+
+  public async createReview(review: CreateReview, submittedAt: Date) {
+    const reviewRequest = await this.prisma.reviewRequest.findFirst({
+      where: {
+        pullRequestId: review.pullRequestId,
+        reviewerId: review.reviewerId,
+        review: null,
+      },
+    });
+    const reviewRequestId = reviewRequest === null ? null : reviewRequest.id;
+    await this.prisma.review.create({
+      data: { ...review, submittedAt, reviewRequestId },
     });
   }
 }

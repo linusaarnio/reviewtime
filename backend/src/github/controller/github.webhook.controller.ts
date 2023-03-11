@@ -45,6 +45,7 @@ export class GithubWebookController {
     this.registerReviewRequested();
     this.registerInstallationActions();
     this.registerInstallationRepositoriesActions();
+    this.registerReviewSubmitted();
   }
 
   private registerPullRequestOpened() {
@@ -95,6 +96,21 @@ export class GithubWebookController {
         await this.pullRequestService.createReviewRequest({
           pullRequestId: payload.pull_request.id,
           reviewerId: reviewer.id,
+        });
+      },
+    );
+  }
+
+  private registerReviewSubmitted() {
+    this.githubWebhooksClient.on(
+      'pull_request_review.submitted',
+      async ({ payload }) => {
+        const pullRequestId = payload.pull_request.id;
+        const reviewerId = payload.review.user.id;
+        await this.pullRequestService.createReview({
+          id: payload.review.id,
+          pullRequestId,
+          reviewerId,
         });
       },
     );
