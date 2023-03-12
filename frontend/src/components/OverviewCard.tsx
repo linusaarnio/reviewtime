@@ -1,7 +1,7 @@
 export interface OverviewCardContent {
   title: string;
   href: string;
-  body: string;
+  body: React.ReactElement | string;
   icon: (props: React.ComponentProps<"svg">) => JSX.Element;
 }
 

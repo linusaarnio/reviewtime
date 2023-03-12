@@ -21,7 +21,7 @@ export class UserController {
 
   @ApiOkResponse({ type: LoggedInUserResponse })
   @ApiUnauthorizedResponse()
-  @Get('/user')
+  @Get('/')
   public async getLoggedInUser(
     @Session() session: Record<string, any>,
   ): Promise<LoggedInUserResponse> {

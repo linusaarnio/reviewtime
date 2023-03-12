@@ -9,6 +9,7 @@ import { PullRequestService } from '../service/pullrequest.service';
 import {
   AuthoredByUserResponse,
   ReviewRequestedFromUserResponse,
+  UserOverviewResponse,
 } from './pullrequest.api';
 
 @ApiCookieAuth()
@@ -44,5 +45,17 @@ export class PullRequestController {
     const pullRequests =
       await this.pullRequestService.getReviewsRequestedFromUser(userId);
     return { pullRequests };
+  }
+
+  @ApiOkResponse({ type: UserOverviewResponse })
+  @Get('/overview')
+  public async getOverview(
+    @Session() session: Record<string, any>,
+  ): Promise<UserOverviewResponse> {
+    const userId = session.userId as number | undefined;
+    if (userId === undefined) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+    return this.pullRequestService.getOverview(userId);
   }
 }

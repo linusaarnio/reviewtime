@@ -4,42 +4,41 @@ import {
   CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 import { useLoaderData } from "react-router-dom";
+import OverdueWarningPill from "../components/OverdueWarningPill";
 import { OverviewCardContent } from "../components/OverviewCard";
 import OverviewCardRow from "../components/OverviewCardRow";
+import { BackendApi, UserOverviewResponse } from "../generated";
 
-interface Data {
-  waitingFromOthers: number;
-  waitingFromMe: number;
-  nextDueInHours: number;
-}
 
-export const homeLoader: () => Promise<Data> = async () => {
-  console.log("In homeloader");
-  return { waitingFromOthers: 4, waitingFromMe: 2, nextDueInHours: 1 };
+
+export const homeLoader: (api: BackendApi) => Promise<UserOverviewResponse> = async (api) => {
+   return api.pullrequest.getOverview();
 };
 
 const HomePage = () => {
-  const data = useLoaderData() as Data;
+  const data = useLoaderData() as UserOverviewResponse;
   const cards: OverviewCardContent[] = [
     {
       title: "Waiting for review from you",
       href: "to-review",
       icon: ClipboardDocumentListIcon,
-      body: `${data.waitingFromMe} Pull Requests`,
-    },
-    {
-      title: "Next review due in",
-      href: "#",
-      icon: ClockIcon,
-      body: `${data.nextDueInHours} hour`,
+      body: `${data.waitingForUser} Pull Requests`,
     },
     {
       title: "Waiting for review from others",
-      href: "#",
+      href: "your-prs",
       icon: CodeBracketIcon,
-      body: `${data.waitingFromOthers} Pull Requests`,
+      body: `${data.waitingForOthers} Pull Requests`,
     },
   ];
+  if (data.nextReviewDue !== undefined) {
+    cards.push({
+      title: "Next review",
+      href: "to-review",
+      icon: ClockIcon,
+      body: <OverdueWarningPill date={new Date(data.nextReviewDue.reviewDueAt)} soonDueIntervalMilliseconds={7200000} / >,
+    })
+  }
 
   return (
     <div>

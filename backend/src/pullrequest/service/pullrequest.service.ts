@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { UserOverviewResponse } from '../controller/pullrequest.api';
 import {
   AuthoredPullRequest,
   CreatePullRequest,
@@ -47,6 +48,43 @@ export class PullRequestService {
 
   public async createReview(review: CreateReview) {
     await this.repo.createReview(review, new Date());
+  }
+
+  public async getOverview(userId: number): Promise<UserOverviewResponse> {
+    const authoredByUser = await this.getAuthoredByUser(userId);
+    const reviewsRequestedFromUser = await this.getReviewsRequestedFromUser(
+      userId,
+    );
+    const waitingForOthers = authoredByUser.reduce(
+      (numberOfReviewRequests: number, currentPr: AuthoredPullRequest) => {
+        return numberOfReviewRequests + currentPr.reviewRequests.length;
+      },
+      0,
+    );
+
+    return {
+      waitingForOthers,
+      waitingForUser: reviewsRequestedFromUser.length,
+      nextReviewDue: this.getNextReviewDue(reviewsRequestedFromUser),
+    };
+  }
+
+  private getNextReviewDue(
+    prs: ReviewingPullRequest[],
+  ): ReviewingPullRequest | undefined {
+    if (prs.length === 0) {
+      return undefined;
+    }
+    return prs.reduce(
+      (
+        previousSoonestDue: ReviewingPullRequest,
+        currentPr: ReviewingPullRequest,
+      ) => {
+        return currentPr.reviewDueAt < previousSoonestDue.reviewDueAt
+          ? currentPr
+          : previousSoonestDue;
+      },
+    );
   }
 
   private getDueTime(requestTime?: Date): Date {

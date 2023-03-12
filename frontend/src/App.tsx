@@ -50,7 +50,7 @@ const createRouter = (api: BackendApi) => {
         {
           path: "/",
           element: <HomePage />,
-          loader: homeLoader,
+          loader: () => homeLoader(api),
         },
         {
           path: "/to-review",

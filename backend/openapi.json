@@ -179,7 +179,33 @@
         ]
       }
     },
-    "/user/user": {
+    "/pullrequests/overview": {
+      "get": {
+        "operationId": "getOverview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOverviewResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pullrequest"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/user": {
       "get": {
         "operationId": "getLoggedInUser",
         "parameters": [],
@@ -352,6 +378,24 @@
         },
         "required": [
           "pullRequests"
+        ]
+      },
+      "UserOverviewResponse": {
+        "type": "object",
+        "properties": {
+          "waitingForOthers": {
+            "type": "number"
+          },
+          "waitingForUser": {
+            "type": "number"
+          },
+          "nextReviewDue": {
+            "$ref": "#/components/schemas/ReviewingPullRequest"
+          }
+        },
+        "required": [
+          "waitingForOthers",
+          "waitingForUser"
         ]
       },
       "LoggedInUserResponse": {

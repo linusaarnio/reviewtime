@@ -9,8 +9,7 @@ const ErrorPage = () => {
   }
   return (
     <div>
-      Shit hit the fan! Something is wrong with this app, please forgive us and
-      try again tomorrow.
+      Shit hit the fan! Something is wrong with this app.
     </div>
   );
 };

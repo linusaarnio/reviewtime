@@ -10,3 +10,11 @@ export class AuthoredByUserResponse {
 export class ReviewRequestedFromUserResponse {
   public readonly pullRequests: ReviewingPullRequest[];
 }
+
+export class UserOverviewResponse {
+  waitingForOthers: number;
+
+  waitingForUser: number;
+
+  nextReviewDue?: ReviewingPullRequest;
+}

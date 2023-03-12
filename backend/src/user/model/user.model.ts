@@ -9,4 +9,4 @@ export class CreateUser {
   id: number;
   login: string;
   avatarUrl: string;
-} // TODO need to include creation of installations at some point
+} // TODO need to include which installations a user has access to and keep updating it
