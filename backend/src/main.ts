@@ -8,7 +8,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { writeFileSync } from 'fs';
 
 async function bootstrap() {
@@ -27,6 +27,8 @@ async function bootstrap() {
   if (process.env.CREATE_OPENAPI_FILE === 'true') {
     await createOpenapiFile(app);
   }
+
+  app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
 
   await app.listen(process.env.REVIEWTIME_API_PORT);
 }

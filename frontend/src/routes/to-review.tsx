@@ -29,7 +29,11 @@ const ToReviewPage = () => {
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md mt-5">
-      <PullRequestList pullRequests={data.pullRequests.sort((a, b) => a.reviewDue.valueOf() - b.reviewDue.valueOf())} />
+      <PullRequestList
+        pullRequests={data.pullRequests.sort(
+          (a, b) => a.reviewDue.valueOf() - b.reviewDue.valueOf()
+        )}
+      />
     </div>
   );
 };

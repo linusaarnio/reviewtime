@@ -2,6 +2,7 @@ import { Body, Controller, Headers, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { emitterEventNames, Webhooks } from '@octokit/webhooks';
 import { InstallationService } from 'src/installation/service/installation.service';
+import { EmailService } from 'src/notification/email/email.service';
 import { PullRequestService } from 'src/pullrequest/service/pullrequest.service';
 import { UserService } from 'src/user/service/user.service';
 
@@ -19,6 +20,7 @@ export class GithubWebookController {
     private readonly pullRequestService: PullRequestService,
     private readonly userService: UserService,
     private readonly installationService: InstallationService,
+    private readonly emailService: EmailService,
   ) {
     this.registerWebhooks();
   }
@@ -96,6 +98,12 @@ export class GithubWebookController {
         await this.pullRequestService.createReviewRequest({
           pullRequestId: payload.pull_request.id,
           reviewerId: reviewer.id,
+        });
+        await this.emailService.sendEmailIfUserEnabled({
+          recipientUserId: reviewer.id,
+          subject: 'New review request.',
+          text: 'You have a new review request. Get to it!',
+          html: 'You have a new review request. Get to it!',
         });
       },
     );

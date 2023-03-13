@@ -14,6 +14,8 @@ model User {
   id Int @id
   login String @unique
   avatarUrl String
+  emailNotificationsEnabled Boolean @default(false)
+  email String?
   installations Installation[]
   pullRequests PullRequest[]
   reviewRequests ReviewRequest[]

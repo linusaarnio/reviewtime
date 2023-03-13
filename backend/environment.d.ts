@@ -9,6 +9,8 @@ declare global {
       SESSION_COOKIE_SECRET: string;
       REVIEWTIME_API_PORT: string;
       DATABASE_URL: string;
+      SENDGRID_API_KEY: string;
+      SENDGRID_VERIFIED_FROM_EMAIL: string;
       npm_package_version: string;
     }
   }

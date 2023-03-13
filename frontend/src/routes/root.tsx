@@ -20,8 +20,7 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
+  { name: "Settings", href: "/settings" },
   { name: "Sign out", href: "/logout" },
 ];
 

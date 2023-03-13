@@ -44,7 +44,8 @@ export class GithubController {
     try {
       const userId = await this.githubService.authenticate(query.code);
       session.userId = userId;
-    } catch {
+    } catch (e) {
+      console.error(e);
       throw new ForbiddenException('Failed to authenticate with GitHub');
     }
   }

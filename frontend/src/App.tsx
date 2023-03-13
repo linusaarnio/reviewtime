@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   Navigate,
-  redirect,
   RouterProvider,
 } from "react-router-dom";
 
@@ -12,9 +11,13 @@ import AuthenticatedRoot, { authenticatedRootLoader } from "./routes/root";
 import YourPrsPage, { yourPrsLoader } from "./routes/your-prs";
 import LoginPage, { loginLoader } from "./routes/login";
 
-import { BackendApi, LoggedInUserResponse } from "./generated";
-import React, { useState } from "react";
+import { BackendApi } from "./generated";
+import React from "react";
 import Logout from "./routes/logout";
+import SettingsPage, {
+  settingsAction,
+  settingsLoader,
+} from "./routes/settings";
 
 const createRouter = (api: BackendApi) => {
   return createBrowserRouter([
@@ -61,6 +64,12 @@ const createRouter = (api: BackendApi) => {
           path: "/your-prs",
           element: <YourPrsPage />,
           loader: () => yourPrsLoader(api),
+        },
+        {
+          path: "/settings",
+          element: <SettingsPage />,
+          loader: () => settingsLoader(api),
+          action: ({ request }) => settingsAction(api, request),
         },
       ],
     },

@@ -14,6 +14,9 @@ import { UserController } from './user/controller/user.controller';
 import { GithubWebookController } from './github/controller/github.webhook.controller';
 import { InstallationService } from './installation/service/installation.service';
 import { InstallationRepository } from './installation/repository/installation.repository';
+import { EmailService } from './notification/email/email.service';
+import { MailService as SendGridService } from '@sendgrid/mail';
+import * as SendGrid from '@sendgrid/mail';
 
 @Module({
   imports: [LoggerModule.forRoot()],
@@ -33,8 +36,28 @@ import { InstallationRepository } from './installation/repository/installation.r
     InstallationRepository,
     PrismaClient,
     {
+      provide: EmailService,
+      inject: [UserService, SendGridService],
+      useFactory: (
+        userService: UserService,
+        sendGridService: SendGridService,
+      ) =>
+        new EmailService(
+          process.env.SENDGRID_VERIFIED_FROM_EMAIL,
+          userService,
+          sendGridService,
+        ),
+    },
+    {
+      provide: SendGridService,
+      useFactory: () => {
+        const sendGridMailService = SendGrid;
+        sendGridMailService.setApiKey(process.env.SENDGRID_API_KEY);
+        return sendGridMailService;
+      },
+    },
+    {
       provide: App,
-      inject: [],
       useFactory: () =>
         new App({
           appId: process.env.GITHUB_APP_ID,
@@ -47,7 +70,6 @@ import { InstallationRepository } from './installation/repository/installation.r
     },
     {
       provide: Webhooks,
-      inject: [],
       useFactory: () =>
         new Webhooks({ secret: process.env.GITHUB_APP_WEBHOOK_SECRET }),
     },

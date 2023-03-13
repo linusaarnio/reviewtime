@@ -5,6 +5,8 @@ interface UserDTO {
   id: number;
   avatarUrl: string;
   login: string;
+  emailNotificationsEnabled: boolean;
+  email: string | null;
   installations: { id: number }[];
 }
 
@@ -12,6 +14,15 @@ interface CreateUserDTO {
   id: number;
   avatarUrl: string;
   login: string;
+  email?: string;
+  emailNotificationsEnabled?: boolean;
+}
+
+interface UpdateUserDTO {
+  avatarUrl?: string;
+  login?: string;
+  email?: string;
+  emailNotificationsEnabled?: boolean;
 }
 
 @Injectable()
@@ -24,6 +35,8 @@ export class UserRepository {
         id: true,
         avatarUrl: true,
         login: true,
+        emailNotificationsEnabled: true,
+        email: true,
         installations: { select: { id: true } },
       },
       where: { id: userId },
@@ -36,10 +49,10 @@ export class UserRepository {
     });
   }
 
-  public async update(user: CreateUserDTO): Promise<void> {
+  public async update(userId: number, updates: UpdateUserDTO): Promise<void> {
     await this.prisma.user.update({
-      where: { id: user.id },
-      data: user,
+      where: { id: userId },
+      data: updates,
     });
   }
 }

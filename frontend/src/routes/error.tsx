@@ -7,11 +7,7 @@ const ErrorPage = () => {
   if (error instanceof ApiError && error.status === 401) {
     return <Logout />;
   }
-  return (
-    <div>
-      Shit hit the fan! Something is wrong with this app.
-    </div>
-  );
+  return <div>Shit hit the fan! Something is wrong with this app.</div>;
 };
 
 export default ErrorPage;

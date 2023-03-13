@@ -233,6 +233,64 @@
           }
         ]
       }
+    },
+    "/user/settings": {
+      "get": {
+        "operationId": "getUserSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
+    },
+    "/user/email": {
+      "post": {
+        "operationId": "updateEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "cookie": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -422,6 +480,35 @@
           "login",
           "avatar_url",
           "installations"
+        ]
+      },
+      "SettingsResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "emailNotificationsEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "emailNotificationsEnabled"
+        ]
+      },
+      "UpdateEmailRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "emailNotificationsEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "email",
+          "emailNotificationsEnabled"
         ]
       }
     }

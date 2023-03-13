@@ -9,10 +9,10 @@ import { OverviewCardContent } from "../components/OverviewCard";
 import OverviewCardRow from "../components/OverviewCardRow";
 import { BackendApi, UserOverviewResponse } from "../generated";
 
-
-
-export const homeLoader: (api: BackendApi) => Promise<UserOverviewResponse> = async (api) => {
-   return api.pullrequest.getOverview();
+export const homeLoader: (
+  api: BackendApi
+) => Promise<UserOverviewResponse> = async (api) => {
+  return api.pullrequest.getOverview();
 };
 
 const HomePage = () => {
@@ -36,8 +36,13 @@ const HomePage = () => {
       title: "Next review",
       href: "to-review",
       icon: ClockIcon,
-      body: <OverdueWarningPill date={new Date(data.nextReviewDue.reviewDueAt)} soonDueIntervalMilliseconds={7200000} / >,
-    })
+      body: (
+        <OverdueWarningPill
+          date={new Date(data.nextReviewDue.reviewDueAt)}
+          soonDueIntervalMilliseconds={7200000}
+        />
+      ),
+    });
   }
 
   return (
