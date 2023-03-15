@@ -314,33 +314,27 @@
           "authorization_url"
         ]
       },
-      "User": {
-        "type": "object",
-        "properties": {
-          "login": {
-            "type": "string"
-          },
-          "avatarUrl": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "login",
-          "avatarUrl"
-        ]
-      },
       "ReviewRequest": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "number"
+          },
+          "deadlineWarningAt": {
+            "format": "date-time",
+            "type": "string"
+          },
           "dueAt": {
             "format": "date-time",
             "type": "string"
           },
           "reviewer": {
-            "$ref": "#/components/schemas/User"
+            "type": "object"
           }
         },
         "required": [
+          "id",
+          "deadlineWarningAt",
           "dueAt",
           "reviewer"
         ]
@@ -394,6 +388,21 @@
         },
         "required": [
           "pullRequests"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "avatarUrl"
         ]
       },
       "ReviewingPullRequest": {

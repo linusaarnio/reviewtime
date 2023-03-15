@@ -15,12 +15,25 @@ interface PullRequestResult {
     avatarUrl: string;
   };
   reviewRequests: {
+    id: number;
     requestedAt: Date;
     reviewer: {
+      id: number;
       avatarUrl: string;
       login: string;
     };
   }[];
+}
+
+interface ReviewRequestResult {
+  requestedAt: Date;
+  pullRequestId: number;
+  reviewer: {
+    id: number;
+    avatarUrl: string;
+    login: string;
+  };
+  review: { id: number } | null;
 }
 
 @Injectable()
@@ -37,8 +50,9 @@ export class PullRequestRepository {
         reviewRequests: {
           where: { review: null },
           select: {
+            id: true,
             requestedAt: true,
-            reviewer: { select: { avatarUrl: true, login: true } },
+            reviewer: { select: { id: true, avatarUrl: true, login: true } },
           },
         },
       },
@@ -59,8 +73,9 @@ export class PullRequestRepository {
         reviewRequests: {
           where: { AND: [{ review: null }, { reviewerId: userId }] },
           select: {
+            id: true,
             requestedAt: true,
-            reviewer: { select: { avatarUrl: true, login: true } },
+            reviewer: { select: { id: true, avatarUrl: true, login: true } },
           },
         },
       },
@@ -84,10 +99,15 @@ export class PullRequestRepository {
   public async createReviewRequest(
     reviewRequest: CreateReviewRequest,
     requestedAt: Date,
-  ): Promise<void> {
-    await this.prisma.reviewRequest.create({
+  ): Promise<ReviewRequestResult & { id: number }> {
+    const { id } = await this.prisma.reviewRequest.create({
       data: { ...reviewRequest, requestedAt },
     });
+    const created = await this.getReviewRequest(id);
+    if (created === null) {
+      throw new Error('Failed to create review request');
+    }
+    return { ...created, id };
   }
 
   public async createReview(review: CreateReview, submittedAt: Date) {
@@ -101,6 +121,21 @@ export class PullRequestRepository {
     const reviewRequestId = reviewRequest === null ? null : reviewRequest.id;
     await this.prisma.review.create({
       data: { ...review, submittedAt, reviewRequestId },
+    });
+  }
+
+  public async getReviewRequest(
+    reviewRequestId: number,
+  ): Promise<ReviewRequestResult | null> {
+    return this.prisma.reviewRequest.findUnique({
+      select: {
+        id: true,
+        pullRequestId: true,
+        requestedAt: true,
+        reviewer: true,
+        review: { select: { id: true } },
+      },
+      where: { id: reviewRequestId },
     });
   }
 }

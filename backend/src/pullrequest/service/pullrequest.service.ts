@@ -6,14 +6,16 @@ import {
   CreateReview,
   CreateReviewRequest,
   ReviewingPullRequest,
+  ReviewRequest,
 } from '../model/pullrequest.model';
 import { PullRequestRepository } from '../repository/pullrequest.repository';
 
 @Injectable()
 export class PullRequestService {
-  dueAfterMinutes = 30; // TODO get this from a service instead
-
-  constructor(private readonly repo: PullRequestRepository) {}
+  constructor(
+    private readonly repo: PullRequestRepository,
+    private readonly reviewDueAfterMinutes: number,
+  ) {}
 
   public async getAuthoredByUser(
     userId: number,
@@ -24,6 +26,7 @@ export class PullRequestService {
       reviewRequests: pr.reviewRequests.map((request) => ({
         ...request,
         dueAt: this.getDueTime(request.requestedAt),
+        deadlineWarningAt: this.getDeadlineWarningAt(request.requestedAt),
       })),
     }));
   }
@@ -42,8 +45,18 @@ export class PullRequestService {
     await this.repo.createPullRequest(pullRequest);
   }
 
-  public async createReviewRequest(reviewRequest: CreateReviewRequest) {
-    await this.repo.createReviewRequest(reviewRequest, new Date());
+  public async createReviewRequest(
+    reviewRequest: CreateReviewRequest,
+  ): Promise<ReviewRequest> {
+    const created = await this.repo.createReviewRequest(
+      reviewRequest,
+      new Date(),
+    );
+    return {
+      ...created,
+      dueAt: this.getDueTime(created.requestedAt),
+      deadlineWarningAt: this.getDeadlineWarningAt(created.requestedAt),
+    };
   }
 
   public async createReview(review: CreateReview) {
@@ -69,6 +82,14 @@ export class PullRequestService {
     };
   }
 
+  public async isReviewed(reviewRequestId: number): Promise<boolean> {
+    const reviewRequest = await this.repo.getReviewRequest(reviewRequestId);
+    if (reviewRequest === null) {
+      throw new Error(`Reviewrequest with id ${reviewRequestId} was null`);
+    }
+    return reviewRequest.review !== null;
+  }
+
   private getNextReviewDue(
     prs: ReviewingPullRequest[],
   ): ReviewingPullRequest | undefined {
@@ -91,6 +112,17 @@ export class PullRequestService {
     if (requestTime === undefined) {
       return new Date();
     }
-    return new Date(requestTime.getTime() + 1000 * 60 * this.dueAfterMinutes);
+    return new Date(
+      requestTime.getTime() + 1000 * 60 * this.reviewDueAfterMinutes,
+    );
+  }
+
+  private getDeadlineWarningAt(requestTime?: Date): Date {
+    if (requestTime === undefined) {
+      return new Date();
+    }
+    return new Date(
+      requestTime.getTime() + (1000 * 60 * this.reviewDueAfterMinutes) / 2,
+    );
   }
 }

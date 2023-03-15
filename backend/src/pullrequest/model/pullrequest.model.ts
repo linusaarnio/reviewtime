@@ -1,4 +1,4 @@
-class PullRequest {
+export class PullRequest {
   title: string;
   url: string;
   repository: Repository;
@@ -23,8 +23,10 @@ class User {
 }
 
 export class ReviewRequest {
+  id: number;
+  deadlineWarningAt: Date;
   dueAt: Date;
-  reviewer: User;
+  reviewer: User & { id: number };
 }
 
 export interface CreatePullRequest {

@@ -3,6 +3,7 @@ import { App } from 'octokit';
 import { GithubController } from './github/controller/github.controller';
 import { GithubService } from './github/service/github.service';
 import { LoggerModule } from 'nestjs-pino';
+import { GraphileWorkerModule } from 'nestjs-graphile-worker';
 import { PullRequestController } from './pullrequest/controller/pullrequest.controller';
 import { PullRequestService } from './pullrequest/service/pullrequest.service';
 import { PullRequestRepository } from './pullrequest/repository/pullrequest.repository';
@@ -17,9 +18,17 @@ import { InstallationRepository } from './installation/repository/installation.r
 import { EmailService } from './notification/email/email.service';
 import { MailService as SendGridService } from '@sendgrid/mail';
 import * as SendGrid from '@sendgrid/mail';
+import { SendEmailIfNotReviewedTask } from './notification/worker/tasks/send-email-if-not-reviewed.task';
+import { NotificationWorkerService } from './notification/worker/notification.worker.service';
+import { NotificationService } from './notification/notification.service';
 
 @Module({
-  imports: [LoggerModule.forRoot()],
+  imports: [
+    LoggerModule.forRoot(),
+    GraphileWorkerModule.forRoot({
+      connectionString: process.env.DATABASE_URL,
+    }),
+  ],
   controllers: [
     GithubWebookController,
     GithubController,
@@ -28,13 +37,24 @@ import * as SendGrid from '@sendgrid/mail';
   ],
   providers: [
     GithubService,
-    PullRequestService,
     PullRequestRepository,
     UserService,
     UserRepository,
     InstallationService,
     InstallationRepository,
     PrismaClient,
+    SendEmailIfNotReviewedTask,
+    NotificationWorkerService,
+    NotificationService,
+    {
+      provide: PullRequestService,
+      inject: [PullRequestRepository],
+      useFactory: (repo: PullRequestRepository) =>
+        new PullRequestService(
+          repo,
+          Number(process.env.REVIEW_DUE_AFTER_MINUTES),
+        ),
+    },
     {
       provide: EmailService,
       inject: [UserService, SendGridService],

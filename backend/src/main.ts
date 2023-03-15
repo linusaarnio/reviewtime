@@ -11,6 +11,8 @@ import {
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { writeFileSync } from 'fs';
 
+import { WorkerService } from 'nestjs-graphile-worker';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(
@@ -29,6 +31,8 @@ async function bootstrap() {
   }
 
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
+
+  app.get(WorkerService).run();
 
   await app.listen(process.env.REVIEWTIME_API_PORT);
 }
