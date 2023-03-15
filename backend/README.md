@@ -32,19 +32,8 @@ $ npm run test:cov
 ```
 
 ## Environment variables:
-To run the application, the following environment variables need to be set.
+To run the application, a number of environment variables need to be set.
 They can also exist in a .env file in the root of the repository.
 
-- REVIEWTIME_API_PORT
-- DATABASE_URL (postgres connection url)
+The environment variables needed are the upper case variables from environment.d.ts
 
-- GITHUB_APP_ID
-- GITHUB_APP_PRIVATE_KEY
-- GITHUB_APP_OAUTH_CLIENT_ID
-- GITHUB_APP_OAUTH_CLIENT_SECRET
-- GITHUB_APP_WEBHOOK_SECRET
-
-- SESSION_COOKIE_SECRET
-- SECURE_SESSION_COOKIE (true/false)
-
--CREATE_OPENAPI_FILE (true/false)

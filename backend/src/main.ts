@@ -24,7 +24,7 @@ async function bootstrap() {
     }),
   ); // TODO implement another session store, default leaks memory: https://docs.nestjs.com/techniques/session
   // https://github.com/expressjs/session#compatible-session-stores
-  app.enableCors({ origin: 'http://localhost:3001', credentials: true });
+  app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
 
   if (process.env.CREATE_OPENAPI_FILE === 'true') {
     await createOpenapiFile(app);

@@ -14,6 +14,7 @@ declare global {
       SENDGRID_VERIFIED_FROM_EMAIL: string;
       CREATE_OPENAPI_FILE: 'true' | 'false';
       REVIEW_DUE_AFTER_MINUTES: string;
+      FRONTEND_URL: string;
       npm_package_version: string;
     }
   }
