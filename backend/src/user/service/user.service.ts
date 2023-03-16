@@ -28,8 +28,8 @@ export class UserService {
   }
 
   public async upsert(user: CreateUser): Promise<void> {
-    const existing = await this.getUser(user.id);
-    if (existing === undefined) {
+    const existing = await this.repo.getById(user.id);
+    if (existing === null) {
       await this.create(user);
       return;
     }
