@@ -5,7 +5,11 @@ import {
   Query,
   Session,
 } from '@nestjs/common';
-import { AuthorizationCallbackRequest, AuthorizeResponse } from './github.api';
+import {
+  AuthorizationCallbackRequest,
+  AuthorizationCallbackResponse,
+  AuthorizeResponse,
+} from './github.api';
 import { GithubService } from '../service/github.service';
 import { createState } from '../utils/github.utils';
 import {
@@ -31,13 +35,13 @@ export class GithubController {
     return { authorization_url: this.githubService.getAuthorizationUrl(state) };
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({ type: AuthorizationCallbackResponse })
   @ApiForbiddenResponse()
   @Get('/oauth/callback')
   public async authorizationCallback(
     @Query() query: AuthorizationCallbackRequest,
     @Session() session: Record<string, any>,
-  ): Promise<void> {
+  ): Promise<AuthorizationCallbackResponse> {
     if (query.state !== session.state) {
       throw new ForbiddenException('Invalid state value');
     }
@@ -48,6 +52,7 @@ export class GithubController {
       console.error(e);
       throw new ForbiddenException('Failed to authenticate with GitHub');
     }
+    return { success: true };
   }
 
   @ApiOkResponse()

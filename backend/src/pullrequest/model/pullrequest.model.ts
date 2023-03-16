@@ -15,6 +15,7 @@ export class AuthoredPullRequest extends PullRequest {
 export class ReviewingPullRequest extends PullRequest {
   author: User;
   reviewDueAt: Date;
+  reviewDeadlineWarningAt: Date;
 }
 
 class User {

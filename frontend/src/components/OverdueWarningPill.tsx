@@ -2,15 +2,15 @@ import { formatDistanceToNow } from "date-fns";
 import { classNames } from "../utils";
 
 interface Props {
-  date: Date;
-  soonDueIntervalMilliseconds: number;
+  dueAt: Date;
+  deadlineWarningAt: Date;
 }
 
-const OverdueWarningPill = ({ date, soonDueIntervalMilliseconds }: Props) => {
+const OverdueWarningPill = ({ dueAt, deadlineWarningAt }: Props) => {
   const color =
-    date.valueOf() <= Date.now()
+    dueAt.valueOf() <= Date.now()
       ? "bg-red-100 text-red-800"
-      : date.valueOf() <= Date.now() + soonDueIntervalMilliseconds
+      : deadlineWarningAt.valueOf() <= Date.now()
       ? "bg-yellow-100 text-yellow-800"
       : "bg-green-100 text-green-800";
 
@@ -22,8 +22,8 @@ const OverdueWarningPill = ({ date, soonDueIntervalMilliseconds }: Props) => {
           color
         )}
       >
-        {date.valueOf() > Date.now()
-          ? `Due in ${formatDistanceToNow(date)}`
+        {dueAt.valueOf() > Date.now()
+          ? `Due in ${formatDistanceToNow(dueAt)}`
           : "Overdue"}
       </p>
     </div>

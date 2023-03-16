@@ -9,6 +9,7 @@ export interface PullRequestOverview {
   participantName: string;
   participantAvatarUrl: string;
   reviewDue: Date;
+  deadlineWarningAt: Date;
 }
 
 interface Props {
@@ -25,15 +26,15 @@ export const PullRequestListItem = ({ pullRequest }: Props) => {
               {pullRequest.title}
             </p>
             <OverdueWarningPill
-              date={pullRequest.reviewDue}
-              soonDueIntervalMilliseconds={7200000}
+              dueAt={pullRequest.reviewDue}
+              deadlineWarningAt={pullRequest.deadlineWarningAt}
             />
           </div>
           <div className="mt-2 sm:flex sm:justify-between">
             <div className="sm:flex">
               <p className="flex items-center text-sm text-gray-500">
                 <img
-                  className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
+                  className="inline-block mr-1.5 h-6 w-6 rounded-full ring-2 ring-white"
                   src={pullRequest.participantAvatarUrl}
                   alt={pullRequest.participantName}
                 />

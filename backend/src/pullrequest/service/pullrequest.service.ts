@@ -38,6 +38,9 @@ export class PullRequestService {
     return pullRequests.map((pr) => ({
       ...pr,
       reviewDueAt: this.getDueTime(pr.reviewRequests[0].requestedAt),
+      reviewDeadlineWarningAt: this.getDeadlineWarningAt(
+        pr.reviewRequests[0].requestedAt,
+      ),
     }));
   }
 

@@ -27,6 +27,7 @@ const getOnePrOverviewPerReviewRequest: (
     participantAvatarUrl: reviewRequest.reviewer.avatarUrl,
     participantName: reviewRequest.reviewer.login,
     reviewDue: new Date(reviewRequest.dueAt),
+    deadlineWarningAt: new Date(reviewRequest.deadlineWarningAt),
   }));
 };
 

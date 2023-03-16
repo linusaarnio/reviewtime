@@ -1,8 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import HomePage, { homeLoader } from "./routes/home";
 import ToReviewPage, { toReviewLoader } from "./routes/to-review";
@@ -12,12 +8,12 @@ import YourPrsPage, { yourPrsLoader } from "./routes/your-prs";
 import LoginPage, { loginLoader } from "./routes/login";
 
 import { BackendApi } from "./generated";
-import React from "react";
 import Logout from "./routes/logout";
 import SettingsPage, {
   settingsAction,
   settingsLoader,
 } from "./routes/settings";
+import Callback, { callbackLoader } from "./routes/callback";
 
 const createRouter = (api: BackendApi) => {
   return createBrowserRouter([
@@ -28,14 +24,8 @@ const createRouter = (api: BackendApi) => {
     },
     {
       path: "/oauth/callback",
-      element: <Navigate to={"/"} />,
-      loader: async ({ request }) => {
-        const url = new URL(request.url);
-        return api.github.authorizationCallback(
-          url.searchParams.get("state") as string,
-          url.searchParams.get("code") as string
-        );
-      },
+      element: <Callback />,
+      loader: async ({ request }) => callbackLoader(request, api),
     },
     {
       path: "/logout",

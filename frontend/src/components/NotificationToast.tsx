@@ -11,10 +11,9 @@ const NotificationToast = ({ show, setShow }: Props) => {
   return (
     <div
       aria-live="assertive"
-      className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+      className="pointer-events-none  flex items-end px-4 py-6 sm:items-start sm:p-6"
     >
       <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-        {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
         <Transition
           show={show}
           as={Fragment}
@@ -39,7 +38,7 @@ const NotificationToast = ({ show, setShow }: Props) => {
                     Successfully saved!
                   </p>
                   <p className="mt-1 text-sm text-gray-500">
-                    Anyone with a link can now view this file.
+                    Your notification settings have been updated.
                   </p>
                 </div>
                 <div className="ml-4 flex flex-shrink-0">

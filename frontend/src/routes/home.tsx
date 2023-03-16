@@ -38,8 +38,10 @@ const HomePage = () => {
       icon: ClockIcon,
       body: (
         <OverdueWarningPill
-          date={new Date(data.nextReviewDue.reviewDueAt)}
-          soonDueIntervalMilliseconds={7200000}
+          dueAt={new Date(data.nextReviewDue.reviewDueAt)}
+          deadlineWarningAt={
+            new Date(data.nextReviewDue.reviewDeadlineWarningAt)
+          }
         />
       ),
     });

@@ -12,12 +12,9 @@ const LoginPage = () => {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-4xl font-bold tracking-tight text-gray-900">
-            ReviewTime
-          </h2>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Sign in to your account
+        <div className="sm:mx-auto sm:w-full sm:max-w-md ">
+          <h2 className="mt-6 flex justify-center text-4xl font-bold tracking-tight text-gray-900">
+            <img className="h-14 w-auto" src="/logo.webp" alt="Reviewtime" />
           </h2>
         </div>
 
@@ -28,7 +25,7 @@ const LoginPage = () => {
               <div>
                 <a
                   href={data.authorization_url}
-                  className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
+                  className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 >
                   <svg
                     className="h-5 w-5"

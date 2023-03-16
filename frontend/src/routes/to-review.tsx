@@ -18,6 +18,7 @@ export const toReviewLoader: (api: BackendApi) => Promise<Data> = async (
       repository: pr.repository.name,
       title: pr.title,
       reviewDue: new Date(pr.reviewDueAt),
+      deadlineWarningAt: new Date(pr.reviewDeadlineWarningAt),
       url: pr.url,
     })
   );

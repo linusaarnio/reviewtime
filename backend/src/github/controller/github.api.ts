@@ -7,3 +7,7 @@ export class AuthorizationCallbackRequest {
 
   code: string;
 }
+
+export class AuthorizationCallbackResponse {
+  success: boolean;
+}

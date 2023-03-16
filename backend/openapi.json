@@ -92,7 +92,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationCallbackResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": ""
@@ -314,6 +321,17 @@
           "authorization_url"
         ]
       },
+      "AuthorizationCallbackResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
       "ReviewRequest": {
         "type": "object",
         "properties": {
@@ -415,6 +433,10 @@
             "format": "date-time",
             "type": "string"
           },
+          "reviewDeadlineWarningAt": {
+            "format": "date-time",
+            "type": "string"
+          },
           "title": {
             "type": "string"
           },
@@ -428,6 +450,7 @@
         "required": [
           "author",
           "reviewDueAt",
+          "reviewDeadlineWarningAt",
           "title",
           "url",
           "repository"

@@ -92,7 +92,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationCallbackResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": ""
@@ -314,33 +321,38 @@
           "authorization_url"
         ]
       },
-      "User": {
+      "AuthorizationCallbackResponse": {
         "type": "object",
         "properties": {
-          "login": {
-            "type": "string"
-          },
-          "avatarUrl": {
-            "type": "string"
+          "success": {
+            "type": "boolean"
           }
         },
         "required": [
-          "login",
-          "avatarUrl"
+          "success"
         ]
       },
       "ReviewRequest": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "number"
+          },
+          "deadlineWarningAt": {
+            "format": "date-time",
+            "type": "string"
+          },
           "dueAt": {
             "format": "date-time",
             "type": "string"
           },
           "reviewer": {
-            "$ref": "#/components/schemas/User"
+            "type": "object"
           }
         },
         "required": [
+          "id",
+          "deadlineWarningAt",
           "dueAt",
           "reviewer"
         ]
@@ -396,6 +408,21 @@
           "pullRequests"
         ]
       },
+      "User": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "avatarUrl"
+        ]
+      },
       "ReviewingPullRequest": {
         "type": "object",
         "properties": {
@@ -403,6 +430,10 @@
             "$ref": "#/components/schemas/User"
           },
           "reviewDueAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "reviewDeadlineWarningAt": {
             "format": "date-time",
             "type": "string"
           },
@@ -419,6 +450,7 @@
         "required": [
           "author",
           "reviewDueAt",
+          "reviewDeadlineWarningAt",
           "title",
           "url",
           "repository"
