@@ -122,12 +122,18 @@
         "responses": {
           "200": {
             "description": ""
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "tags": [
           "github"
         ],
         "security": [
+          {
+            "cookie": []
+          },
           {
             "cookie": []
           }
@@ -148,6 +154,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "tags": [
@@ -174,6 +183,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "tags": [
@@ -200,6 +212,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "tags": [
@@ -228,7 +243,7 @@
             }
           },
           "401": {
-            "description": ""
+            "description": "Unauthorized"
           }
         },
         "tags": [
@@ -257,7 +272,7 @@
             }
           },
           "401": {
-            "description": ""
+            "description": "Unauthorized"
           }
         },
         "tags": [
@@ -287,6 +302,9 @@
         "responses": {
           "201": {
             "description": ""
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "tags": [

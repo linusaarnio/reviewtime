@@ -1,18 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Session,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  ApiCookieAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Authenticated } from 'src/decorators/auth/authenticated.decorator';
+import { UserId } from 'src/decorators/auth/user-id.decorator';
 import { UserService } from '../service/user.service';
 import {
   LoggedInUserResponse,
@@ -20,27 +9,22 @@ import {
   UpdateEmailRequest,
 } from './user.api';
 
-@ApiCookieAuth()
+@Authenticated()
 @ApiTags('user')
 @Controller('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({ type: LoggedInUserResponse })
-  @ApiUnauthorizedResponse()
   @Get('/')
   public async getLoggedInUser(
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<LoggedInUserResponse> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     const user = await this.userService.getUser(userId);
     if (user === undefined) {
       console.log(
         `User ${userId} was saved in state but not found in userService`,
-      ); // TODO real logging
+      ); // TODO nicely formatted logging (no time before TDDD27 deadline)
       throw new Error('Could not get user from DB');
     }
 
@@ -53,15 +37,10 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: SettingsResponse })
-  @ApiUnauthorizedResponse()
   @Get('/settings')
   public async getUserSettings(
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<SettingsResponse> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     const user = await this.userService.getUser(userId);
 
     return {
@@ -74,12 +53,8 @@ export class UserController {
   @Post('/email')
   public async updateEmail(
     @Body() body: UpdateEmailRequest,
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<void> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     return this.userService.updateEmail(
       userId,
       body.email,

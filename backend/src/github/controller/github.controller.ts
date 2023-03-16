@@ -18,6 +18,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Authenticated } from 'src/decorators/auth/authenticated.decorator';
 
 @ApiCookieAuth()
 @ApiTags('github')
@@ -55,11 +56,10 @@ export class GithubController {
     return { success: true };
   }
 
+  @Authenticated()
   @ApiOkResponse()
   @Get('/logout')
-  public async logout(
-    @Session() session: any, // TODO proper typing for session
-  ): Promise<void> {
+  public async logout(@Session() session): Promise<void> {
     session.destroy();
   }
 }

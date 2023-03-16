@@ -1,10 +1,7 @@
-import {
-  Controller,
-  Get,
-  Session,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Authenticated } from 'src/decorators/auth/authenticated.decorator';
+import { UserId } from 'src/decorators/auth/user-id.decorator';
 import { PullRequestService } from '../service/pullrequest.service';
 import {
   AuthoredByUserResponse,
@@ -12,7 +9,7 @@ import {
   UserOverviewResponse,
 } from './pullrequest.api';
 
-@ApiCookieAuth()
+@Authenticated()
 @ApiTags('pullrequest')
 @Controller('/pullrequests')
 export class PullRequestController {
@@ -21,12 +18,8 @@ export class PullRequestController {
   @ApiOkResponse({ type: AuthoredByUserResponse })
   @Get('/authored')
   public async getAuthoredByUser(
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<AuthoredByUserResponse> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     const pullRequests = await this.pullRequestService.getAuthoredByUser(
       userId,
     );
@@ -36,12 +29,8 @@ export class PullRequestController {
   @ApiOkResponse({ type: ReviewRequestedFromUserResponse })
   @Get('/review-requested')
   public async getReviewRequestedFromUser(
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<ReviewRequestedFromUserResponse> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     const pullRequests =
       await this.pullRequestService.getReviewsRequestedFromUser(userId);
     return { pullRequests };
@@ -50,12 +39,8 @@ export class PullRequestController {
   @ApiOkResponse({ type: UserOverviewResponse })
   @Get('/overview')
   public async getOverview(
-    @Session() session: Record<string, any>,
+    @UserId() userId: number,
   ): Promise<UserOverviewResponse> {
-    const userId = session.userId as number | undefined;
-    if (userId === undefined) {
-      throw new UnauthorizedException('Unauthorized');
-    }
     return this.pullRequestService.getOverview(userId);
   }
 }

@@ -141,7 +141,7 @@ export class GithubWebookController {
           console.log(
             `received unhandled installation action: ${payload.action}`,
           );
-          return; // TODO handle suspend and unsuspend
+          return; // TODO (no time before TDDD27 deadline) handle suspend and unsuspend
       }
     });
   }
