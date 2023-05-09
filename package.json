@@ -1,0 +1,27 @@
+{
+  "name": "reviewtime",
+  "version": "1.0.0",
+  "description": "A web application to ensure that no PR in your organization goes too long without a review, while noone has to chase others around nagging them for reviews.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linusaarnio/reviewtime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linusaarnio/reviewtime/issues"
+  },
+  "homepage": "https://github.com/linusaarnio/reviewtime#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.36.1"
+  },
+  "dependencies": {
+    "checkly": "^4.0.12",
+    "otpauth": "^9.1.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
