@@ -1,0 +1,79 @@
+services:
+  - type: web
+    plan: free
+    region: frankfurt
+    name: reviewtime-backend
+    env : node
+    rootDir: backend
+    buildCommand: npm install && npm run build && npx prisma migrate deploy
+    startCommand: npm run start:prod
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rt-prod
+          property: connectionString
+          
+      - key: CREATE_OPENAPI_FILE
+        value: 'false'
+
+      - key: SECURE_SESSION_COOKIE
+        value: "true"
+
+      - key: REVIEWTIME_API_PORT
+        value: "443"
+
+      - key: REVIEW_DUE_AFTER_MINUTES
+        value: "360"
+
+      - key: TRUST_PROXY_SESSION_COOKIE # Always true for render since it uses a reverse proxy
+        value: "true"
+
+      # The rest of the environment vars have sync: false to be set during first deploy
+      - key: GITHUB_APP_ID
+        sync: false 
+
+      - key: GITHUB_APP_PRIVATE_KEY
+        sync: false 
+
+      - key: GITHUB_APP_OAUTH_CLIENT_ID
+        sync: false
+
+      - key: GITHUB_APP_OAUTH_CLIENT_SECRET
+        sync: false
+
+      - key: GITHUB_APP_WEBHOOK_SECRET
+        sync: false
+
+      - key: SESSION_COOKIE_SECRET
+        sync: false
+
+      - key: SENDGRID_API_KEY
+        sync: false
+
+      - key: SENDGRID_VERIFIED_FROM_EMAIL
+        sync: false
+
+      -  key: FRONTEND_URL
+         sync: false
+
+  - type: web
+    env: static
+    name: reviewtime-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run generate && npm run build
+    staticPublishPath: ./build
+    routes:
+      - type: rewrite # This rewrite is needed for react router
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        sync: false
+
+databases:
+  - name: rt-prod
+    region: frankfurt
+    plan: free
+
+
+

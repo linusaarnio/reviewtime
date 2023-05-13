@@ -20,7 +20,10 @@ async function bootstrap() {
       secret: process.env.SESSION_COOKIE_SECRET,
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: process.env.SECURE_SESSION_COOKIE !== 'false' },
+      proxy: process.env.TRUST_PROXY_SESSION_COOKIE === 'true',
+      cookie: {
+        secure: process.env.SECURE_SESSION_COOKIE !== 'false',
+      },
     }),
   ); // TODO (no time before TDDD27 deadline) implement another session store, default leaks memory: https://docs.nestjs.com/techniques/session
   // https://github.com/expressjs/session#compatible-session-stores

@@ -8,6 +8,7 @@ declare global {
       GITHUB_APP_WEBHOOK_SECRET: string;
       SESSION_COOKIE_SECRET: string;
       SECURE_SESSION_COOKIE: 'true' | 'false';
+      TRUST_PROXY_SESSION_COOKIE: 'true' | 'false';
       REVIEWTIME_API_PORT: string;
       DATABASE_URL: string;
       SENDGRID_API_KEY: string;
