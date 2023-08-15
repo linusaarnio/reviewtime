@@ -25,7 +25,7 @@ async function bootstrap() {
         secure: process.env.SECURE_SESSION_COOKIE !== 'false',
       },
     }),
-  ); // TODO (no time before TDDD27 deadline) implement another session store, default leaks memory: https://docs.nestjs.com/techniques/session
+  ); // TODO implement another session store, default leaks memory: https://docs.nestjs.com/techniques/session
   // https://github.com/expressjs/session#compatible-session-stores
   app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
 

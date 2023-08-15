@@ -24,7 +24,7 @@ export class UserController {
     if (user === undefined) {
       console.log(
         `User ${userId} was saved in state but not found in userService`,
-      ); // TODO nicely formatted logging (no time before TDDD27 deadline)
+      );
       throw new Error('Could not get user from DB');
     }
 

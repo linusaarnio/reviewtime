@@ -13,7 +13,7 @@ export class CreateUser {
   avatarUrl: string;
   email?: string;
   emailNotificationsEnabled?: boolean;
-} // TODO need to include which installations a user has access to and keep updating it (no time before TDDD27 deadline)
+} // TODO need to include which installations a user has access to and keep updating it
 
 export class UpdateUser {
   id: number;

@@ -83,8 +83,6 @@ export class EmailService {
     reviewRequest: ReviewRequest,
     pullRequest: { title: string; url: string },
   ): Email {
-    console.log('due at date');
-    console.log(reviewRequest.dueAt);
     return {
       recipientUserId: reviewRequest.reviewer.id,
       subject: `Review request due in ${formatDistanceToNow(
