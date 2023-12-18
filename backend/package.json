@@ -6,7 +6,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.4",
     "@octokit/types": "^9.0.0",
-    "@octokit/webhooks": "^10.7.0",
+    "@octokit/webhooks": "^10.9.2",
     "@octokit/webhooks-types": "^6.10.0",
     "@prisma/client": "^4.10.1",
     "@sendgrid/mail": "^7.7.0",
